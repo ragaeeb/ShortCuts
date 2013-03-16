@@ -40,7 +40,8 @@ private slots:
 	void onAboutToQuit();
 
 public:
-    ShortCuts(Application *app);
+	static void create(Application* app);
+    ShortCuts(Application* app);
     virtual ~ShortCuts();
     Q_INVOKABLE void saveValueFor(const QString &objectName, const QVariant &inputValue);
     Q_INVOKABLE QVariant getValueFor(const QString &objectName);

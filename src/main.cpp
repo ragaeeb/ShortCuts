@@ -33,7 +33,7 @@ Q_DECL_EXPORT int main(int argc, char **argv)
 	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("CustomComponent", 1, 0, "FilePickerMode", "Can't instantiate");
 
     Application app(argc, argv);
-    new ShortCuts(&app);
+    ShortCuts::create(&app);
 
     return Application::exec();
 }

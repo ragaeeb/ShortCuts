@@ -15,8 +15,6 @@
 #include <bb/cascades/QmlDocument>
 #include <bb/cascades/SceneCover>
 
-#include <bb/system/InvokeTargetReply>
-
 using namespace bb::cascades;
 using namespace bb::cascades::pickers;
 using namespace bb::system;
@@ -31,8 +29,7 @@ const char* DELIMITER = ", ";
 
 namespace shortcuts {
 
-ShortCuts::ShortCuts(bb::cascades::Application* app) :
-		QObject(app), m_changed(false), m_toast(NULL)
+ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_changed(false), m_toast(NULL)
 {
 	if ( getValueFor("animations").isNull() ) { // first run
 		LOGGER("First run!");
@@ -60,6 +57,11 @@ ShortCuts::ShortCuts(bb::cascades::Application* app) :
     	m_map = getValueFor("map").value< QHash<QString, QVariant> >();
     	LOGGER( "Map size" << m_map.size() );
     }
+}
+
+
+void ShortCuts::create(bb::cascades::Application* app) {
+	new ShortCuts(app);
 }
 
 
