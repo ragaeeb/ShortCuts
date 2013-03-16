@@ -32,6 +32,7 @@ class ShortCuts : public QObject
     SystemToast* m_toast;
 	QHash<QString, QVariant> m_map;
 
+    ShortCuts(Application* app);
     bool registerGestures(QString const& sequence, QString uri);
     void showRecordedGesture(QString const& sequence, QString const& message);
     void displayToast(QString const& text);
@@ -41,7 +42,6 @@ private slots:
 
 public:
 	static void create(Application* app);
-    ShortCuts(Application* app);
     virtual ~ShortCuts();
     Q_INVOKABLE void saveValueFor(const QString &objectName, const QVariant &inputValue);
     Q_INVOKABLE QVariant getValueFor(const QString &objectName);
