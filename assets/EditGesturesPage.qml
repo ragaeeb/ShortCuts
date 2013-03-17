@@ -48,13 +48,13 @@ BasePage
                         
                         imageSource: {
                             if (ListItemData.type == "phone") {
-                                return "asset:///images/ic_show_dialpad.png"
+                                return "file:///usr/share/icons/ic_phone.png"
                             } else if (ListItemData.type == "uri") {
                                 return "asset:///images/ic_open_link.png"
                             } else if (ListItemData.type == "file") {
                                 return "asset:///images/action_openFile.png"
                             } else {
-                                return "asset:///images/ic_open.png"
+                                return "file:///usr/share/icons/bb_action_open.png"
                             }
                         }
                         

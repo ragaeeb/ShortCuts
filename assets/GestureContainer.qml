@@ -1,19 +1,18 @@
 import bb.cascades 1.0
+import CustomComponent 1.0
 
 Container
 {
+    id: gestureContainer
+    
+    property alias delay: timer.interval
+    property bool active: true
+    property variant array: []
     property int downX;
     property int downY;
     property double correction: 75
     
-    signal swipedLeft();
-    signal swipedRight();
-    signal swipedDown();
-    signal swipedUp();
-    signal swipedUpLeft();
-    signal swipedUpRight();
-    signal swipedDownLeft();
-    signal swipedDownRight();
+    signal sequenceCompleted(variant sequence)
     
     function shake(control)
     {
@@ -29,9 +28,63 @@ Container
 		control.rotationZ = rand* Math.random()*6;
     }
     
-    layout: AbsoluteLayout {
-        
+    function recordGesture(value)
+    {
+        if (active)
+        {
+	        timer.start()
+	        
+	        var copy = array
+	        copy.push(value)
+	        array = copy
+        }
     }
+    
+    onActiveChanged:
+    {
+        if (active)
+        {
+	        var emptyArray = []
+	        array = emptyArray
+        }
+    }
+    
+    layout: AbsoluteLayout {}
+    
+    gestureHandlers: [
+        TapHandler {
+            onTapped: {
+                gestureContainer.recordGesture("Tap")
+            }
+        },
+        
+        DoubleTapHandler {
+            onDoubleTapped: {
+                gestureContainer.recordGesture("DoubleTap")
+            }
+        },
+        
+        PinchHandler {
+            onPinchEnded: {
+                //console.log(event.pinchRatio, event.rotation, event.distance)
+                gestureContainer.recordGesture("Pinch")
+            }
+        }
+    ]
+    
+    attachedObjects: [
+        QTimer {
+            id: timer
+            singleShot: true
+            interval: 1000
+            
+            onTimeout: {
+                sequenceCompleted(gestureContainer.array)
+                var array = []
+                gestureContainer.array = array
+            }
+        }
+    ]
     
 	ImageView {
 	    id: fingerprint
@@ -70,25 +123,25 @@ Container
             
             if (yDiff < 200) {
                 if ((downX - event.windowX) > 320) {
-                    swipedLeft();
+                    recordGesture("Left")
                 } else if ((event.windowX - downX) > 320) {
-                    swipedRight();
+                    recordGesture("Right")
                 }
             } else if (xDiff < 200) {
 	            if ((downY - event.windowY) > 320) {
-	                swipedUp();
+	                recordGesture("Up")
 	            } else if ( (event.windowY - downY) > 320 ) {
-	                swipedDown();
+	                recordGesture("Down")
 	            }
             } else if (yDiff >= 200 && xDiff >= 200) { // diagonal swipe
                 if ( (downX - event.windowX) > 320 && (downY - event.windowY) > 320 ) {
-                    swipedUpLeft();
+                    recordGesture("UpLeft")
                 } else if ( (event.windowX - downX) > 320 && (downY - event.windowY) > 320 ) {
-                    swipedUpRight();
+                    recordGesture("UpRight")
                 } if ( (downX - event.windowX) > 320 && (event.windowY - downY) > 320 ) {
-                    swipedDownLeft();
+                    recordGesture("DownLeft")
                 } else if ( (event.windowX - downX) > 320 && (event.windowY - downY) > 320 ) {
-                    swipedDownRight();
+                    recordGesture("DownRight")
                 }
             }
             

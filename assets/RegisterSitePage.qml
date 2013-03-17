@@ -35,7 +35,7 @@ BaseRegisterPage
             hintText: qsTr("http://abdurrahman.org")
             inputMode: TextFieldInputMode.Url
             text: qsTr("http://")
-            
+
             validator: Validator {
                 mode: ValidationMode.Immediate
                 errorMessage: qsTr("Invalid URL")

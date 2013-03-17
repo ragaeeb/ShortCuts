@@ -5,77 +5,69 @@ NavigationPane
 {
     id: navigationPane
 
-    property SettingsPage settingsPage
-    property HelpPage helpPage
+    attachedObjects: [
+        ComponentDefinition {
+            id: definition
+        }
+    ]
 
     Menu.definition: MenuDefinition
     {
         settingsAction: SettingsActionItem
         {
+            property Page settingsPage
+            
             onTriggered:
             {
                 if (!settingsPage) {
-                    settingsPage = settingsPageDefinition.createObject()
+                    definition.source = "SettingsPage.qml"
+                    settingsPage = definition.createObject()
                 }
                 
                 navigationPane.push(settingsPage);
+            }
+        }
+
+        helpAction: HelpActionItem
+        {
+            property Page helpPage
+            
+            onTriggered:
+            {
+                if (!helpPage) {
+                    definition.source = "HelpPage.qml"
+                    helpPage = definition.createObject();
+                }
+
+                navigationPane.push(helpPage);
             }
         }
         
         actions: [
             ActionItem {
                 title: qsTr("Edit")
-                imageSource: "asset:///images/ic_edit.png"
+                imageSource: "file:///usr/share/icons/ic_edit.png"
                 enabled: navigationPane.top == page
                 
                 onTriggered:
                 {
-                    var page = editPageDefinition.createObject()
+                    definition.source = "EditGesturesPage.qml"
+                    var page = definition.createObject()
                     navigationPane.push(page);
                 }
             }
         ]
-
-        helpAction: HelpActionItem
-        {
-            onTriggered:
-            {
-                if (!helpPage) {
-                    helpPage = helpPageDefinition.createObject();
-                }
-
-                navigationPane.push(helpPage);
-            }
-        }
     }
 
     onPopTransitionEnded: {
         page.destroy();
     }
     
-    attachedObjects: [
-		
-        ComponentDefinition {
-            id: settingsPageDefinition
-            source: "SettingsPage.qml"
-        },
-        
-        ComponentDefinition {
-            id: helpPageDefinition
-            source: "HelpPage.qml"
-        },
-        
-        ComponentDefinition {
-            id: editPageDefinition
-            source: "EditGesturesPage.qml"
-        }
-    ]
-
     BasePage
     {
         id: page
         titleContainer.enabled: false
-        
+
         keyListeners: [
             KeyListener {
                 onKeyReleased: {
@@ -104,8 +96,6 @@ NavigationPane
 	        
 	        GestureContainer
 	        {
-	            property variant array: []
-	            
 	            id: gestureContainer
 	            horizontalAlignment: HorizontalAlignment.Fill
 	            verticalAlignment: VerticalAlignment.Fill
@@ -114,93 +104,18 @@ NavigationPane
 	                spaceQuota: 1
 	            }
 	            
-		        function recordGesture(value)
-		        {
-		            timer.start()
-		            
-		            var copy = array
-		            copy.push(value)
-		            array = copy
-		        }
-		        
-		        onSwipedDown: {
-		            recordGesture("Down")
-		        }
-		        
-		        onSwipedUp: {
-		            recordGesture("Up")
-		        }
-		        
-		        onSwipedLeft: {
-		            recordGesture("Left")
-		        }
-		        
-		        onSwipedRight: {
-		            recordGesture("Right")
-		        }
-		        
-		        onSwipedDownRight: {
-		            recordGesture("DownRight")
-		        }
-	
-		        onSwipedDownLeft: {
-		            recordGesture("DownLeft")
-		        }
-		        
-		        onSwipedUpRight: {
-		            recordGesture("UpRight")
-		        }
-		        
-		        onSwipedUpLeft: {
-		            recordGesture("UpLeft")
-		        }
-		        
-		        gestureHandlers: [
-		            TapHandler {
-		                onTapped: {
-		                    gestureContainer.recordGesture("Tap")
-		                }
-	                },
-	                
-	                DoubleTapHandler {
-	                    onDoubleTapped: {
-	                        gestureContainer.recordGesture("DoubleTap")
-	                    }
-	                },
-	                
-	                PinchHandler {
-	                    onPinchEnded: {
-	                        //console.log(event.pinchRatio, event.rotation, event.distance)
-	                        gestureContainer.recordGesture("Pinch")
-	                    }
-	                }
-		        ]
-		        
-		        attachedObjects: [
-	                QTimer {
-	                    id: timer
-	                    singleShot: true
-	                    interval: app.getValueFor("delay")
-	                    
-	                    onTimeout: {
-	                        var result = app.process(gestureContainer.array)
-	                        var sequence = app.render(gestureContainer.array)
-	                        var array = []
-	                        gestureContainer.array = array
-	                        
-	                        if (!result) {
-	                            var page = grpDefinition.createObject()
-	                            page.sequence = sequence
-	                            navigationPane.push(page)
-	                        }
-	                    }
-	                },
-	                
-			        ComponentDefinition {
-			            id: grpDefinition
-			            source: "GestureReactionPage.qml"
-			        }
-		        ]
+	            onSequenceCompleted: {
+                    var result = app.process(sequence)
+                    
+                    if (!result) {
+                        var sequenceString = app.render(sequence)
+                        
+                        definition.source = "GestureReactionPage.qml"
+                        var page = definition.createObject()
+                        page.sequence = sequenceString
+                        navigationPane.push(page)
+                    }
+	            }
 		    }
         }
     }
