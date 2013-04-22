@@ -34,6 +34,7 @@ public:
 
 signals:
 	void contactSelected(QString const& name, QString const& avatarPath);
+	void canceled();
 
 private slots:
 	void cancel();

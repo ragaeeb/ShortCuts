@@ -1,45 +1,69 @@
 import bb.cascades 1.0
+import bb.system 1.0
 
 BasePage
 {
+    paneProperties: NavigationPaneProperties {
+        property variant navPane: navigationPane
+        id: properties
+    }
+    
     actions: [
         DeleteActionItem {
             id: clearAllAction
-            title: qsTr("Clear All")
-            enabled: false
-            
+            title: qsTr("Delete All") + Retranslate.onLanguageChanged
+            enabled: app.numShortcuts > 0
+
             onTriggered: {
-                app.clearAllShortcuts()
-                theDataModel.clear()
-                emptyLabel = true
+            	prompt.show()
             }
+
+            attachedObjects: [
+                SystemDialog {
+                    id: prompt
+                    title: qsTr("Confirm") + Retranslate.onLanguageChanged
+                    body: qsTr("Are you sure you want to delete all the gestures?") + Retranslate.onLanguageChanged
+                    confirmButton.label: qsTr("Yes") + Retranslate.onLanguageChanged
+                    cancelButton.label: qsTr("No") + Retranslate.onLanguageChanged
+
+                    onFinished: {
+                        if (result == SystemUiResult.ConfirmButtonSelection) {
+                            app.clearAllShortcuts()
+                            theDataModel.clear()
+                        }
+                    }
+                }
+            ]
         }
     ]
     
+    function onNumShortcutsChanged() {
+        if (app && app.numShortcuts == 0) {
+            properties.navPane.pop()
+        }
+    }
+    
+    onCreationCompleted: {
+        app.numShortcutsChanged.connect(onNumShortcutsChanged);
+    }
+    
     contentContainer: Container
     {
-        topPadding: 20
-        
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Fill
         
-        Label {
-            id: emptyLabel
-            text: qsTr("No gestures have been registered.")
-            textStyle.textAlign: TextAlign.Center
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Center
-            multiline: true
-            visible: false
-        }
-        
         ListView {
-            property variant application
-            
             id: listView
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
-            topMargin: 20
+            
+            function performDelete(ListItem) {
+                var removed = app.removeShortcut(ListItem.data.sequence)
+
+                if (removed) {
+                    theDataModel.removeAt(ListItem.indexPath)
+                }
+            }
 
             listItemComponents: [
                 ListItemComponent {
@@ -77,11 +101,7 @@ BasePage
                                 
                                 DeleteActionItem {
                                     onTriggered: {
-                                        var removed = sli.ListItem.view.application.removeShortcut(sli.ListItem.data.sequence)
-                                        
-                                        if (removed) {
-                                            sli.ListItem.view.dataModel.removeAt(sli.ListItem.indexPath)
-                                        }
+                                        sli.ListItem.view.performDelete(sli.ListItem)
                                     }
                                 }
                             }
@@ -92,11 +112,6 @@ BasePage
             
             dataModel: ArrayDataModel {
                 id: theDataModel
-                
-	            onItemRemoved: {
-	                emptyLabel.visible = theDataModel.size() == 0
-	                clearAllAction.enabled = theDataModel.size() > 0
-	            }
             }
             
             layoutProperties: StackLayoutProperties {
@@ -104,12 +119,8 @@ BasePage
             }
             
             onCreationCompleted: {
-                application = app
                 var shortcuts = app.getAllShortcuts()
                 theDataModel.append(shortcuts)
-                
-                emptyLabel.visible = shortcuts.length == 0
-                clearAllAction.enabled = shortcuts.length > 0
             }
         }
     }

@@ -2,22 +2,17 @@ import bb.cascades 1.0
 
 Container
 {
-    background: Color.White
+    attachedObjects: [
+        ImagePaintDefinition {
+            id: back
+            imageSource: "asset:///images/title_bg.png"
+        }
+    ]
+    
+    background: back.imagePaint
     horizontalAlignment: HorizontalAlignment.Fill
     verticalAlignment: VerticalAlignment.Center
-    
     layout: DockLayout {}
-    
-    ImageView {
-        imageSource: "asset:///images/title_bg.png"
-        topMargin: 0
-        leftMargin: 0
-        rightMargin: 0
-        bottomMargin: 0
-
-        horizontalAlignment: HorizontalAlignment.Fill
-        verticalAlignment: VerticalAlignment.Fill
-    }
     
     ImageView {
         imageSource: "asset:///images/logo.png"
@@ -28,5 +23,14 @@ Container
 
         horizontalAlignment: HorizontalAlignment.Center
         verticalAlignment: VerticalAlignment.Center
+    }
+    
+    Label {
+        textStyle.base: SystemDefaults.TextStyles.SmallText
+        text: qsTr("%1 shortcuts registered...").arg(app.numShortcuts) + Retranslate.onLanguageChanged
+        multiline: true
+        textStyle.textAlign: TextAlign.Center
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Bottom
     }
 }

@@ -28,7 +28,6 @@ void PimContactPickerSheet::open()
 
 		QSet<AttributeKind::Type> filters;
 		filters << AttributeKind::Phone;
-		filters << AttributeKind::VideoChat;
 		KindSubKindSpecifier mobileFilter(AttributeKind::Phone, AttributeSubKind::PhoneMobile);
 		QSet<KindSubKindSpecifier> subkindFilters;
 		subkindFilters << mobileFilter;
@@ -42,9 +41,8 @@ void PimContactPickerSheet::open()
 	m_picker->open();
 }
 
-void PimContactPickerSheet::cancel()
-{
-	//m_picker->close();
+void PimContactPickerSheet::cancel() {
+	emit canceled();
 }
 
 void PimContactPickerSheet::onContactSelected(int contactid)

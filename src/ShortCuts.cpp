@@ -1,49 +1,49 @@
 #include "ShortCuts.hpp"
 #include "Logger.h"
+#include "PimContactPickerSheet.h"
 
 #include <bb/PpsObject>
 
-#include <bb/system/InvokeManager>
-#include <bb/system/SystemToast>
+#include <QTimer>
 
-#include <bb/cascades/Pickers/ContactPicker.hpp>
+#include <bb/system/InvokeManager>
+#include <bb/system/SystemDialog>
+
+#include <bb/cascades/pickers/FilePicker>
 
 #include <bb/cascades/AbstractDialog>
 #include <bb/cascades/Application>
 #include <bb/cascades/Control>
 #include <bb/cascades/NavigationPane>
 #include <bb/cascades/QmlDocument>
-#include <bb/cascades/SceneCover>
-
-using namespace bb::cascades;
-using namespace bb::cascades::pickers;
-using namespace bb::system;
-using namespace bb::pim::contacts;
-using namespace bb;
 
 namespace {
-
-const char* DELIMITER = ", ";
-
+	const char* DELIMITER = ", ";
 }
 
 namespace shortcuts {
 
-ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_changed(false), m_toast(NULL)
-{
-	if ( getValueFor("animations").isNull() ) { // first run
-		LOGGER("First run!");
-		saveValueFor("animations", 0);
-		saveValueFor("delay", 1000);
-	}
+using namespace canadainc;
+using namespace bb::cascades;
+using namespace bb::system;
 
-	QmlDocument* qmlCover = QmlDocument::create("asset:///Cover.qml").parent(this);
-	Control* sceneRoot = qmlCover->createRootObject<Control>();
-	SceneCover* cover = SceneCover::create().content(sceneRoot);
-	app->setCover(cover);
+ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_changed(false), m_cover("Cover.qml")
+{
+	INIT_SETTING("animations", 0);
+	INIT_SETTING("delay", 1000);
+
+    qmlRegisterType<QTimer>("CustomComponent", 1, 0, "QTimer");
+    qmlRegisterType<PimContactPickerSheet>("bb.cascades.pickers", 1, 0, "PimContactPickerSheet");
+	qmlRegisterType<bb::cascades::pickers::FilePicker>("CustomComponent", 1, 0, "FilePicker");
+	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("CustomComponent", 1, 0, "FileType", "Can't instantiate");
+	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("CustomComponent", 1, 0, "FilePickerMode", "Can't instantiate");
+	qmlRegisterType<bb::system::SystemDialog>("bb.system", 1, 0, "SystemDialog");
+
+	m_cover.setContext("app", this);
 
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
     qml->setContextProperty("app", this);
+    qml->setContextProperty("persist", &m_persistance);
 
     m_root = qml->createRootObject<NavigationPane>();
     app->setScene(m_root);
@@ -52,10 +52,13 @@ ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_changed(f
 
     connect( app, SIGNAL( aboutToQuit() ), this, SLOT( onAboutToQuit() ) );
 
-    if ( !getValueFor("map").isNull() ) {
+    QVariant saved = m_persistance.getValueFor("map");
+
+    if ( !saved.isNull() ) {
     	LOGGER("Mappings exist!");
-    	m_map = getValueFor("map").value< QHash<QString, QVariant> >();
+    	m_map = saved.value< QHash<QString, QVariant> >();
     	LOGGER( "Map size" << m_map.size() );
+    	emit numShortcutsChanged();
     }
 }
 
@@ -74,28 +77,11 @@ void ShortCuts::onAboutToQuit()
 		LOGGER("saving changed values" << m_map);
 
 		if ( m_map.isEmpty() ) {
-			m_settings.remove("map");
+			m_persistance.remove("map");
 		} else {
-			saveValueFor("map", m_map);
+			m_persistance.saveValueFor("map", m_map);
 		}
 	}
-}
-
-
-QVariant ShortCuts::getValueFor(const QString &objectName)
-{
-    QVariant value( m_settings.value(objectName) );
-
-	LOGGER("getValueFor()" << objectName << value);
-
-    return value;
-}
-
-
-void ShortCuts::saveValueFor(const QString &objectName, const QVariant &inputValue)
-{
-	LOGGER("saveValueFor()" << objectName << inputValue);
-	m_settings.setValue(objectName, inputValue);
 }
 
 
@@ -187,6 +173,9 @@ void ShortCuts::registerFile(QString const& sequence, QString const& uri)
 		m_map.insert(sequence, request);
 
 		showRecordedGesture(sequence, uri);
+
+		m_changed = true;
+		emit numShortcutsChanged();
 	}
 }
 
@@ -205,6 +194,9 @@ void ShortCuts::registerUri(QString const& sequence, QString const& uri)
 	m_map.insert(sequence, request);
 
 	showRecordedGesture(sequence, uri);
+
+	m_changed = true;
+	emit numShortcutsChanged();
 }
 
 
@@ -214,7 +206,7 @@ void ShortCuts::registerPhone(QString const& sequence, QString const& number)
 
 	QVariantMap map;
 	map.insert("number", number);
-	QByteArray requestData = PpsObject::encode(map, NULL);
+	QByteArray requestData = bb::PpsObject::encode(map, NULL);
 
 	QVariantMap request;
 	request.insert("action", "bb.action.DIAL");
@@ -227,6 +219,9 @@ void ShortCuts::registerPhone(QString const& sequence, QString const& number)
 	m_map.insert(sequence, request);
 
 	showRecordedGesture(sequence, number);
+
+	m_changed = true;
+	emit numShortcutsChanged();
 }
 
 
@@ -245,6 +240,9 @@ void ShortCuts::registerApp(QString const& sequence, QString const& target, QStr
 	m_map.insert(sequence, request);
 
 	showRecordedGesture(sequence, uri);
+
+	m_changed = true;
+	emit numShortcutsChanged();
 }
 
 
@@ -255,7 +253,8 @@ bool ShortCuts::removeShortcut(QString const& sequence)
 
 	if (removed) {
 		m_changed = true;
-		displayToast( tr("Successfully removed shortcut:\n%1").arg(sequence) );
+		m_persistance.showToast( tr("Successfully removed shortcut:\n%1").arg(sequence) );
+		emit numShortcutsChanged();
 	}
 
 	return removed;
@@ -266,22 +265,10 @@ void ShortCuts::showRecordedGesture(QString const& sequence, QString const& mess
 {
 	m_changed = true;
 
-	displayToast( tr("Successfully registered gesture:\n%1\nto %2").arg(sequence).arg(message) );
+	m_persistance.showToast( tr("Successfully registered gesture:\n%1\nto %2").arg(sequence).arg(message) );
 
 	m_root->pop();
 	m_root->pop();
-}
-
-
-void ShortCuts::displayToast(QString const& text)
-{
-	if (m_toast == NULL) {
-		LOGGER("Instantiating new system toast");
-		m_toast = new SystemToast(this);
-	}
-
-	m_toast->setBody(text);
-	m_toast->show();
 }
 
 
@@ -292,7 +279,9 @@ void ShortCuts::clearAllShortcuts()
 	m_map.clear();
 	m_changed = true;
 
-	displayToast("Cleared all records!");
+	emit numShortcutsChanged();
+
+	m_persistance.showToast("Cleared all records!");
 }
 
 
@@ -309,6 +298,11 @@ QString ShortCuts::render(QStringList const& sequence)
     }
 
     return text;
+}
+
+
+int ShortCuts::numShortcuts() const {
+	return m_map.size();
 }
 
 

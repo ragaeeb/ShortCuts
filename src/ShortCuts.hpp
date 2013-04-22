@@ -1,9 +1,8 @@
 #ifndef ShortCuts_HPP_
 #define ShortCuts_HPP_
 
-#include <QSettings>
-
-#include <bb/system/SystemUiResult>
+#include "LazySceneCover.h"
+#include "Persistance.h"
 
 namespace bb {
 	namespace cascades {
@@ -11,40 +10,38 @@ namespace bb {
 		class Application;
 		class NavigationPane;
 	}
-
-	namespace system {
-		class SystemToast;
-	}
 }
 
 namespace shortcuts {
 
 using namespace bb::cascades;
-using namespace bb::system;
+using namespace canadainc;
 
 class ShortCuts : public QObject
 {
     Q_OBJECT
 
+	Q_PROPERTY(int numShortcuts READ numShortcuts NOTIFY numShortcutsChanged)
+
+    LazySceneCover m_cover;
+    Persistance m_persistance;
     NavigationPane* m_root;
-    QSettings m_settings;
     bool m_changed;
-    SystemToast* m_toast;
 	QHash<QString, QVariant> m_map;
 
     ShortCuts(Application* app);
     bool registerGestures(QString const& sequence, QString uri);
     void showRecordedGesture(QString const& sequence, QString const& message);
-    void displayToast(QString const& text);
 
 private slots:
 	void onAboutToQuit();
 
+Q_SIGNALS:
+	void numShortcutsChanged();
+
 public:
 	static void create(Application* app);
     virtual ~ShortCuts();
-    Q_INVOKABLE void saveValueFor(const QString &objectName, const QVariant &inputValue);
-    Q_INVOKABLE QVariant getValueFor(const QString &objectName);
 
     Q_INVOKABLE static QString render(QStringList const& sequence);
     Q_INVOKABLE bool process(QStringList const& sequence);
@@ -55,6 +52,7 @@ public:
     Q_INVOKABLE bool removeShortcut(QString const& sequence);
     Q_INVOKABLE void clearAllShortcuts();
     Q_INVOKABLE QVariantList getAllShortcuts() const;
+    int numShortcuts() const;
 };
 
 }

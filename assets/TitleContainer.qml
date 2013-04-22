@@ -30,7 +30,7 @@ Container {
         
         onCreationCompleted:
         {
-            if ( app.getValueFor("animations") == 1 ) {
+            if ( persist.getValueFor("animations") == 1 ) {
                 translate.play()
             }
         }
@@ -65,7 +65,7 @@ Container {
 	    
 	    onCreationCompleted:
 	    {
-	        if ( app.getValueFor("animations") == 1 )
+	        if ( persist.getValueFor("animations") == 1 )
 	        {
 	            fade.play()
 	            translate2.play()

@@ -7,10 +7,10 @@ BasePage {
         
         SettingPair {
             title: qsTr("Animations")
-        	toggle.checked: app.getValueFor("animations") == 1
+        	toggle.checked: persist.getValueFor("animations") == 1
     
             toggle.onCheckedChanged: {
-        		app.saveValueFor("animations", checked ? 1 : 0)
+        		persist.saveValueFor("animations", checked ? 1 : 0)
         		
         		if (checked) {
         		    infoText.text = qsTr("Controls will be animated whenever they are loaded. Note that this may affect shortcut interpretation. If your gestures are not always recognized properly, turn this off.")
@@ -42,10 +42,10 @@ BasePage {
 		        preferredWidth: 225
 		        fromValue: 900
 		        toValue: 3000
-		        value: app.getValueFor("delay")
+		        value: persist.getValueFor("delay")
 		        
 		        onValueChanged: {
-		            app.saveValueFor("delay", value)
+		            persist.saveValueFor("delay", value)
 		            infoText.text = qsTr("Gestures will be interpreted after %1 seconds. Note that if this is too short, and you have some complex gestures, it might make it harder for the system to always interpret them. If your gestures are not always recognized properly, increase this value.").arg(value/1000)
 		        }
 		    }

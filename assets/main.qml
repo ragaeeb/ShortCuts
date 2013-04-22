@@ -45,9 +45,9 @@ NavigationPane
         
         actions: [
             ActionItem {
-                title: qsTr("Edit")
+                title: qsTr("Edit") + Retranslate.onLanguageChanged
                 imageSource: "file:///usr/share/icons/ic_edit.png"
-                enabled: navigationPane.top == page
+                enabled: app.numShortcuts > 0
                 
                 onTriggered:
                 {
@@ -65,7 +65,6 @@ NavigationPane
     
     BasePage
     {
-        id: page
         titleContainer.enabled: false
 
         keyListeners: [

@@ -50,7 +50,7 @@ Page
                 
 		        onCreationCompleted:
 		        {
-		            if ( app.getValueFor("animations") == 1 ) {
+		            if ( persist.getValueFor("animations") == 1 ) {
 		                translate.play()
 		            }
 		        }

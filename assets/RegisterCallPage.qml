@@ -3,12 +3,18 @@ import bb.cascades.pickers 1.0
 
 BaseRegisterPage
 {
+    paneProperties: NavigationPaneProperties {
+        property variant navPane: navigationPane
+        id: properties
+    }
+    
     contentContainer: Container
     {
-        topPadding: 20;
+        topPadding: 20
         
         onCreationCompleted: {
             pcps.open()
+            nameFadeIn.play()
         }
         
 	    ImageView {
@@ -21,6 +27,15 @@ BaseRegisterPage
 	
 	        horizontalAlignment: HorizontalAlignment.Center
 	        verticalAlignment: VerticalAlignment.Top
+	        
+	        animations: [
+	            RotateTransition {
+	                id: rotate
+	            	fromAngleZ: -180
+	            	toAngleZ: 27
+	            	duration: 500
+                }
+	        ]
 	    }
         
         Label {
@@ -28,13 +43,29 @@ BaseRegisterPage
             horizontalAlignment: HorizontalAlignment.Fill
             textStyle.textAlign: TextAlign.Center
             textStyle.fontSize: FontSize.XXSmall
+            text: qsTr("Please select a contact...") + Retranslate.onLanguageChanged
+            opacity: 0
+            
+            animations: [
+                FadeTransition {
+                    id: nameFadeIn
+                    fromOpacity: 0
+                    toOpacity: 1
+                    duration: 1500
+                }
+            ]
+        }
+        
+        Divider {
+            id: separator
+            visible: false
+            bottomMargin: 0
         }
         
         ListView {
             id: listView
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
-            topMargin: 20
 
             listItemComponents: [
                 ListItemComponent {
@@ -64,15 +95,31 @@ BaseRegisterPage
             id: pcps
             
             onContactSelected: {
+                separator.visible = true
+                
                 contactName.text = name
-                avatar.imageSource = avatarPath
+
+                if (avatarPath) {
+                    if (avatarPath.indexOf("file://") == -1) {
+                        avatar.imageSource = "file://" + avatarPath
+                    } else {
+                        avatar.imageSource = avatarPath
+                    }
+                } else {
+                    avatar.imageSource = "file:///usr/share/icons/tmb_contact.png"
+                }
                 
                 theDataModel.clear()
-                var result = pcps.getPhoneNumbers()
+                theDataModel.append( pcps.getPhoneNumbers() )
+                rotate.play()
                 
-                for (var i = 0; i < result.length; i++) {
-                    theDataModel.append(result[i])
+                if ( theDataModel.size() == 1 ) {
+                    listView.triggered([0], true)
                 }
+            }
+            
+            onCanceled: {
+            	properties.navPane.pop()                
             }
         }
     ]

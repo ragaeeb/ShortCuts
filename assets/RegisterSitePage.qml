@@ -8,12 +8,21 @@ BaseRegisterPage
         ActionItem {
             id: saveAction
             title: qsTr("Save")
-            imageSource: "asset:///images/ic_save.png"
+            imageSource: "file:///usr/share/icons/bb_action_saveas.png"
             ActionBar.placement: ActionBarPlacement.OnBar
-            enabled: false
 
             onTriggered: {
-                app.registerUri(sequence, textField.text)
+                if (saveAction.enabled)
+                {
+                    var patt1=/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+                    var result = patt1.test(textField.text)
+                    
+                    if (result) {
+                    	app.registerUri(sequence, textField.text)
+                    } else {
+                        persist.showToast("Invalid URL")
+                    }
+                }
             }
         }
     ]
@@ -34,29 +43,13 @@ BaseRegisterPage
             horizontalAlignment: HorizontalAlignment.Fill
             hintText: qsTr("http://abdurrahman.org")
             inputMode: TextFieldInputMode.Url
-            text: qsTr("http://")
-
-            validator: Validator {
-                mode: ValidationMode.Immediate
-                errorMessage: qsTr("Invalid URL")
-                onValidate: {
-                    var patt1=/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
-                    var result = patt1.test(textField.text)
-                    state = result ? ValidationState.Valid : ValidationState.Invalid
-                }
-                
-                onStateChanged: {
-                    saveAction.enabled = state == ValidationState.Valid
-                }
-            }
+            text: qsTr("http://") + Retranslate.onLanguageChanged
             
             input {
                 submitKey: SubmitKey.Submit
                 
                 onSubmitted: {
-                    if (saveAction.enabled) {
-                        saveAction.triggered()
-                    }
+                	saveAction.triggered()
                 }
             }
         }

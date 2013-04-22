@@ -66,7 +66,6 @@ Container
         
         PinchHandler {
             onPinchEnded: {
-                //console.log(event.pinchRatio, event.rotation, event.distance)
                 gestureContainer.recordGesture("Pinch")
             }
         }
