@@ -27,7 +27,7 @@ using namespace canadainc;
 using namespace bb::cascades;
 using namespace bb::system;
 
-ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_changed(false), m_cover("Cover.qml")
+ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_cover("Cover.qml"), m_changed(false)
 {
 	INIT_SETTING("animations", 0);
 	INIT_SETTING("delay", 1000);
