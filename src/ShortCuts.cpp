@@ -33,7 +33,6 @@ ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_cover("Co
 
 void ShortCuts::init()
 {
-	INIT_SETTING("animations", 0);
 	INIT_SETTING("delay", 1000);
 
 	m_cover.setContext("app", this);

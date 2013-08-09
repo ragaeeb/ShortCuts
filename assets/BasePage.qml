@@ -44,22 +44,6 @@ Page {
 	
 	                horizontalAlignment: HorizontalAlignment.Fill
 	                verticalAlignment: VerticalAlignment.Top
-	                
-	                animations: [
-	                    TranslateTransition {
-	                        id: translate
-	                        toY: 0
-	                        fromY: -100
-	                        duration: 1000
-	                    }
-	                ]
-	                
-			        onCreationCompleted:
-			        {
-			            if ( persist.getValueFor("animations") == 1 ) {
-			                translate.play()
-			            }
-			        }
 	            }
 	        }
 	    }
