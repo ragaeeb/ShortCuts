@@ -1,5 +1,4 @@
 import bb.cascades 1.0
-import CustomComponent 1.0
 
 NavigationPane
 {

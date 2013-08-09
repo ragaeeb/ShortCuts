@@ -34,10 +34,11 @@ class ShortCuts : public QObject
     void showRecordedGesture(QString const& sequence, QString const& message);
 
 private slots:
-	void onAboutToQuit();
+	void init();
 
 Q_SIGNALS:
 	void numShortcutsChanged();
+	void initialize();
 
 public:
 	static void create(Application* app);

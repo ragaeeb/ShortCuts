@@ -1,4 +1,4 @@
-#include <bb/cascades/Application>
+#include "precompiled.h"
 
 #include "Logger.h"
 #include "ShortCuts.hpp"

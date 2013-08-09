@@ -1,21 +1,8 @@
+#include "precompiled.h"
+
 #include "ShortCuts.hpp"
 #include "Logger.h"
 #include "PimContactPickerSheet.h"
-
-#include <bb/PpsObject>
-
-#include <QTimer>
-
-#include <bb/system/InvokeManager>
-#include <bb/system/SystemDialog>
-
-#include <bb/cascades/pickers/FilePicker>
-
-#include <bb/cascades/AbstractDialog>
-#include <bb/cascades/Application>
-#include <bb/cascades/Control>
-#include <bb/cascades/NavigationPane>
-#include <bb/cascades/QmlDocument>
 
 namespace {
 	const char* DELIMITER = ", ";
@@ -29,18 +16,6 @@ using namespace bb::system;
 
 ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_cover("Cover.qml"), m_changed(false)
 {
-	INIT_SETTING("animations", 0);
-	INIT_SETTING("delay", 1000);
-
-    qmlRegisterType<QTimer>("CustomComponent", 1, 0, "QTimer");
-    qmlRegisterType<PimContactPickerSheet>("bb.cascades.pickers", 1, 0, "PimContactPickerSheet");
-	qmlRegisterType<bb::cascades::pickers::FilePicker>("CustomComponent", 1, 0, "FilePicker");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("CustomComponent", 1, 0, "FileType", "Can't instantiate");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("CustomComponent", 1, 0, "FilePickerMode", "Can't instantiate");
-	qmlRegisterType<bb::system::SystemDialog>("bb.system", 1, 0, "SystemDialog");
-
-	m_cover.setContext("app", this);
-
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
     qml->setContextProperty("app", this);
     qml->setContextProperty("persist", &m_persistance);
@@ -50,7 +25,23 @@ ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_cover("Co
 
     qml->setContextProperty("navPane", m_root);
 
-    connect( app, SIGNAL( aboutToQuit() ), this, SLOT( onAboutToQuit() ) );
+	connect( this, SIGNAL( initialize() ), this, SLOT( init() ), Qt::QueuedConnection ); // async startup
+
+	emit initialize();
+}
+
+
+void ShortCuts::init()
+{
+	INIT_SETTING("animations", 0);
+	INIT_SETTING("delay", 1000);
+
+	m_cover.setContext("app", this);
+
+    qmlRegisterType<PimContactPickerSheet>("bb.cascades.pickers", 1, 0, "PimContactPickerSheet");
+	qmlRegisterType<bb::cascades::pickers::FilePicker>("CustomComponent", 1, 0, "FilePicker");
+	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("CustomComponent", 1, 0, "FileType", "Can't instantiate");
+	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("CustomComponent", 1, 0, "FilePickerMode", "Can't instantiate");
 
     QVariant saved = m_persistance.getValueFor("map");
 
@@ -65,23 +56,6 @@ ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_cover("Co
 
 void ShortCuts::create(bb::cascades::Application* app) {
 	new ShortCuts(app);
-}
-
-
-void ShortCuts::onAboutToQuit()
-{
-	LOGGER("onAboutToQuit");
-
-	if (m_changed)
-	{
-		LOGGER("saving changed values" << m_map);
-
-		if ( m_map.isEmpty() ) {
-			m_persistance.remove("map");
-		} else {
-			m_persistance.saveValueFor("map", m_map);
-		}
-	}
 }
 
 
@@ -308,6 +282,16 @@ int ShortCuts::numShortcuts() const {
 
 ShortCuts::~ShortCuts()
 {
+	if (m_changed)
+	{
+		LOGGER("saving changed values" << m_map);
+
+		if ( m_map.isEmpty() ) {
+			m_persistance.remove("map");
+		} else {
+			m_persistance.saveValueFor("map", m_map);
+		}
+	}
 }
 
 }

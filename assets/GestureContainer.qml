@@ -1,5 +1,5 @@
 import bb.cascades 1.0
-import CustomComponent 1.0
+import QtQuick 1.0
 
 Container
 {
@@ -72,12 +72,12 @@ Container
     ]
     
     attachedObjects: [
-        QTimer {
+        Timer {
             id: timer
-            singleShot: true
+            repeat: false
             interval: 1000
             
-            onTimeout: {
+            onTriggered: {
                 sequenceCompleted(gestureContainer.array)
                 var array = []
                 gestureContainer.array = array
