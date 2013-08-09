@@ -1,8 +1,8 @@
 import bb.cascades 1.0
 
 Container {
-    property string backgroundImage: "asset:///images/title_bg.amd"
-    property string logoImage: "asset:///images/logo.png"
+    property string backgroundImage: "images/title_bg.amd"
+    property string logoImage: "images/logo.png"
     
     layout: DockLayout {}
 

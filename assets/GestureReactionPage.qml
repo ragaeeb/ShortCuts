@@ -10,8 +10,8 @@ Page
         verticalAlignment: VerticalAlignment.Fill
         
         TitleContainer {
-            backgroundImage: "asset:///images/dialog_title_bg_silver.amd"
-            logoImage: "asset:///images/unregistered_dialog_title_text.png"
+            backgroundImage: "images/dialog_title_bg_silver.amd"
+            logoImage: "images/unregistered_dialog_title_text.png"
             preferredHeight: 100
         }
         

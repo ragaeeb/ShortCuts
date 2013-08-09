@@ -87,7 +87,7 @@ Container
     
 	ImageView {
 	    id: fingerprint
-	    imageSource: "asset:///images/fingerprint.png"
+	    imageSource: "images/fingerprint.png"
 	    topMargin: 0
 	    leftMargin: 0
 	    rightMargin: 0

@@ -74,9 +74,9 @@ BasePage
                             if (ListItemData.type == "phone") {
                                 return "file:///usr/share/icons/ic_phone.png"
                             } else if (ListItemData.type == "uri") {
-                                return "asset:///images/ic_open_link.png"
+                                return "images/ic_open_link.png"
                             } else if (ListItemData.type == "file") {
-                                return "asset:///images/action_openFile.png"
+                                return "images/action_openFile.png"
                             } else {
                                 return "file:///usr/share/icons/bb_action_open.png"
                             }

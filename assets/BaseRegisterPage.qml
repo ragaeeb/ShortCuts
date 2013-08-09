@@ -8,8 +8,8 @@ Page
     Container {
         TitleContainer {
         	id: titleBar
-            backgroundImage: "asset:///images/dialog_title_bg.png"
-            logoImage: "asset:///images/register_dialog_title_text.png"
+            backgroundImage: "images/dialog_title_bg.png"
+            logoImage: "images/register_dialog_title_text.png"
             preferredHeight: 100
         }
         
@@ -30,7 +30,7 @@ Page
             }
 
             ImageView {
-                imageSource: "asset:///images/bottomDropShadow.png"
+                imageSource: "images/bottomDropShadow.png"
                 topMargin: 0
                 leftMargin: 0
                 rightMargin: 0

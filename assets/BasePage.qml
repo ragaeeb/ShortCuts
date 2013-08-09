@@ -36,7 +36,7 @@ Page {
 	            }
 	
 	            ImageView {
-	                imageSource: "asset:///images/bottomDropShadow.png"
+	                imageSource: "images/bottomDropShadow.png"
 	                topMargin: 0
 	                leftMargin: 0
 	                rightMargin: 0
