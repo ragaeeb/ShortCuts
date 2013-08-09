@@ -2,7 +2,7 @@ import bb.cascades 1.0
 
 Page {
     property alias contentContainer: contentContainer.controls
-    property alias titleContainer: titleBar
+    property alias titleContainer: titleBarRef
     property alias rootContainer: topLevel.controls
     property alias root: topLevel
     
@@ -13,7 +13,7 @@ Page {
         
 	    Container {
 	        TitleContainer {
-	        	id: titleBar
+	        	id: titleBarRef
 	        }
 	        
 	        horizontalAlignment: HorizontalAlignment.Fill
