@@ -4,6 +4,8 @@
 #include "Logger.h"
 #include "PimContactPickerSheet.h"
 
+#include <bps/navigator.h>
+
 namespace {
 	const char* DELIMITER = ", ";
 }
@@ -97,6 +99,11 @@ bool ShortCuts::process(QStringList const& sequence)
 	}
 
 	return exists;
+}
+
+
+void ShortCuts::focus() {
+	navigator_invoke("shortcuts://", 0);
 }
 
 

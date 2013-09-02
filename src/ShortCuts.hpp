@@ -52,6 +52,7 @@ public:
     Q_INVOKABLE void registerApp(QString const& sequence, QString const& target, QString const& uri, QString const& mime);
     Q_INVOKABLE bool removeShortcut(QString const& sequence);
     Q_INVOKABLE void clearAllShortcuts();
+    Q_INVOKABLE void focus();
     Q_INVOKABLE QVariantList getAllShortcuts() const;
     int numShortcuts() const;
 };

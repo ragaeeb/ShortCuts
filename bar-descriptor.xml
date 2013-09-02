@@ -79,6 +79,19 @@
        <asset path="arm/o.le-v7/ShortCuts.so" entry="true" type="Qnx/Elf">ShortCuts.so</asset>
     </configuration>
     
+   <invoke-target id="com.canadainc.Shortcuts">
+      <invoke-target-type>application</invoke-target-type>
+	  <icon>
+			<image public="true">icon.png</image>
+	  </icon>
+	  
+      <filter>
+        <action>bb.action.OPEN</action>
+        <mime-type>*</mime-type>
+        <property var="uris" value="shortcuts://"/>
+      </filter>
+   </invoke-target>
+    
     <!--  The icon for the application, which should be 86x86. -->
     <icon>
         <image>icon.png</image>
@@ -94,6 +107,10 @@
     <asset path="splash_l_landscape.png">splash_l_landscape.png</asset>
     <asset path="splash_l_portrait.png">splash_l_portrait.png</asset>
     <asset path="splash_n.png">splash_n.png</asset>
+    
+    <asset path="../canadainc/assets/BugReportPage.qml">assets/BugReportPage.qml</asset>
+    <asset path="../canadainc/assets/CanadaIncMenu.qml">assets/CanadaIncMenu.qml</asset>
+    <asset path="../canadainc/assets/SliderPair.qml">assets/SliderPair.qml</asset>
     
     <!-- Request permission to execute native code.  Required for native applications. -->
     <permission system="true">run_native</permission>

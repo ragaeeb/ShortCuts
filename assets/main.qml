@@ -1,61 +1,27 @@
 import bb.cascades 1.0
+import bb.multimedia 1.0
 
 NavigationPane
 {
     id: navigationPane
-
+    
     attachedObjects: [
         ComponentDefinition {
             id: definition
+        },
+        
+        MediaKeyWatcher
+        {
+            key: MediaKey.PlayPause
+            
+            onShortPress: {
+                app.focus();
+            }
         }
     ]
 
-    Menu.definition: MenuDefinition
-    {
-        settingsAction: SettingsActionItem
-        {
-            property Page settingsPage
-            
-            onTriggered:
-            {
-                if (!settingsPage) {
-                    definition.source = "SettingsPage.qml"
-                    settingsPage = definition.createObject()
-                }
-                
-                navigationPane.push(settingsPage);
-            }
-        }
-
-        helpAction: HelpActionItem
-        {
-            property Page helpPage
-            
-            onTriggered:
-            {
-                if (!helpPage) {
-                    definition.source = "HelpPage.qml"
-                    helpPage = definition.createObject();
-                }
-
-                navigationPane.push(helpPage);
-            }
-        }
-        
-        actions: [
-            ActionItem {
-                title: qsTr("Edit") + Retranslate.onLanguageChanged
-                imageSource: "file:///usr/share/icons/ic_edit.png"
-                enabled: app.numShortcuts > 0
-                
-                onTriggered:
-                {
-                    definition.source = "EditGesturesPage.qml"
-                    var page = definition.createObject()
-                    navigationPane.push(page);
-                }
-            }
-        ]
+    Menu.definition: CanadaIncMenu {
+        projectName: "short-cuts"
     }
 
     onPopTransitionEnded: {
@@ -70,6 +36,21 @@ NavigationPane
             KeyListener {
                 onKeyReleased: {
                     gestureContainer.recordGesture( "%1".arg( String.fromCharCode(event.key) ) )
+                }
+            }
+        ]
+        
+        actions: [
+            ActionItem {
+                title: qsTr("Edit") + Retranslate.onLanguageChanged
+                imageSource: "images/ic_edit.png"
+                enabled: app.numShortcuts > 0
+                
+                onTriggered:
+                {
+                    definition.source = "EditGesturesPage.qml"
+                    var page = definition.createObject()
+                    navigationPane.push(page);
                 }
             }
         ]
