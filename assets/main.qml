@@ -33,7 +33,8 @@ NavigationPane
         keyListeners: [
             KeyListener {
                 onKeyReleased: {
-                    gestureContainer.recordGesture( "%1".arg( String.fromCharCode(event.key) ) )
+                    var value = String.fromCharCode(event.key);
+                    gestureContainer.recordGesture( "%1".arg(value) );
                 }
             }
         ]
@@ -59,6 +60,7 @@ NavigationPane
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill
             topPadding: 20
+            layout: DockLayout {}
             
             Label
 	        {
@@ -67,7 +69,7 @@ NavigationPane
 	            multiline: true
 	            textStyle.fontSize: FontSize.XXSmall
 	            horizontalAlignment: HorizontalAlignment.Center
-	            verticalAlignment: VerticalAlignment.Center
+	            verticalAlignment: VerticalAlignment.Top
 	            textStyle.textAlign: TextAlign.Center
 	            enabled: false
 	        }
@@ -94,7 +96,52 @@ NavigationPane
                         navigationPane.push(page)
                     }
 	            }
+	            
+	            onGestureAdded: {
+                    currentKey.text = value;
+                    fadeInOut.play();
+                }
 		    }
+	        
+            Label {
+                id: currentKey
+                textStyle.fontSize: FontSize.XXLarge
+                horizontalAlignment: HorizontalAlignment.Center
+                verticalAlignment: VerticalAlignment.Center
+                opacity: 0
+                
+                animations: [
+                    ParallelAnimation
+                    {
+                        id: fadeInOut
+                        
+                        SequentialAnimation {
+                            FadeTransition {
+                                fromOpacity: 0
+                                toOpacity: 1
+                                duration: 250
+                            }
+                            
+                            FadeTransition {
+                                fromOpacity: 1
+                                toOpacity: 0
+                                duration: 250
+                                
+                                onEnded: {
+                                    currentKey.scaleX = currentKey.scaleY = 1;
+                                }
+                            }
+                        }
+                        
+                        ScaleTransition {
+                            fromX: 1
+                            toX: 1.75
+                            fromY: 1
+                            toY: 1.75
+                        }
+                    }
+                ]
+            }
         }
     }
 }

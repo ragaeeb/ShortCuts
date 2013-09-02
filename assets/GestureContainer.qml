@@ -13,6 +13,7 @@ Container
     property double correction: 75
     
     signal sequenceCompleted(variant sequence)
+    signal gestureAdded(string value);
     
     function shake(control)
     {
@@ -32,11 +33,13 @@ Container
     {
         if (active)
         {
-	        timer.start()
+	        timer.start();
 	        
-	        var copy = array
-	        copy.push(value)
-	        array = copy
+	        var copy = array;
+	        copy.push(value);
+	        array = copy;
+	        
+	        gestureAdded(value);
         }
     }
     
