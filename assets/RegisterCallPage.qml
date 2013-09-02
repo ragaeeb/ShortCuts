@@ -1,91 +1,120 @@
 import bb.cascades 1.0
 import bb.cascades.pickers 1.0
+import com.canadainc.data 1.0
 
-BaseRegisterPage
+Page
 {
+    property string sequence
+    
     paneProperties: NavigationPaneProperties {
         property variant navPane: navigationPane
         id: properties
     }
     
-    contentContainer: Container
+    onCreationCompleted: {
+        pcps.open();
+    }
+    
+    ControlDelegate
     {
-        topPadding: 20
+        id: containerDelegate
+        delegateActive: false
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
         
-        onCreationCompleted: {
-            pcps.open()
-            nameFadeIn.play()
-        }
-        
-	    ImageView {
-	        id: avatar
-	        topMargin: 0
-	        leftMargin: 0
-	        rightMargin: 0
-	        bottomMargin: 0
-	        scalingMethod: ScalingMethod.AspectFit
-	
-	        horizontalAlignment: HorizontalAlignment.Center
-	        verticalAlignment: VerticalAlignment.Top
-	        
-	        animations: [
-	            RotateTransition {
-	                id: rotate
-	            	fromAngleZ: -180
-	            	toAngleZ: 27
-	            	duration: 500
+        sourceComponent: ComponentDefinition
+        {
+            Container
+            {
+                property alias avatar: photo
+                property alias contactName: nameLabel
+                property alias model: theDataModel
+                
+                topPadding: 20; leftPadding: 20; rightPadding: 20
+                horizontalAlignment: HorizontalAlignment.Fill
+                verticalAlignment: VerticalAlignment.Fill
+                
+                ImageView {
+                    id: photo
+                    topMargin: 0
+                    leftMargin: 0
+                    rightMargin: 0
+                    bottomMargin: 0
+                    
+                    horizontalAlignment: HorizontalAlignment.Center
+                    verticalAlignment: VerticalAlignment.Top
+                    preferredHeight: 120; preferredWidth: 120;
                 }
-	        ]
-	    }
-        
-        Label {
-            id: contactName
-            horizontalAlignment: HorizontalAlignment.Fill
-            textStyle.textAlign: TextAlign.Center
-            textStyle.fontSize: FontSize.XXSmall
-            text: qsTr("Please select a contact...") + Retranslate.onLanguageChanged
-            opacity: 0
-            
-            animations: [
-                FadeTransition {
-                    id: nameFadeIn
-                    fromOpacity: 0
-                    toOpacity: 1
-                    duration: 1500
+                
+                Label {
+                    id: nameLabel
+                    horizontalAlignment: HorizontalAlignment.Fill
                 }
-            ]
-        }
-        
-        Divider {
-            id: separator
-            visible: false
-            bottomMargin: 0
-        }
-        
-        ListView {
-            id: listView
-            horizontalAlignment: HorizontalAlignment.Fill
-            verticalAlignment: VerticalAlignment.Fill
-
-            listItemComponents: [
-                ListItemComponent {
-                    StandardListItem {
-                        title: ListItemData.number
-                        description: ListItemData.name
+                
+                ListView {
+                    id: listView
+                    horizontalAlignment: HorizontalAlignment.Fill
+                    verticalAlignment: VerticalAlignment.Fill
+                    
+                    function itemType(data, indexPath) {
+                        return data.type;
+                    }
+                    
+                    listItemComponents: [
+                        ListItemComponent {
+                            type: "phone"
+                            
+                            StandardListItem {
+                                title: ListItemData.value
+                                description: qsTr("Call %1").arg(ListItemData.name)
+                                imageSource: "images/ic_phone.png"
+                            }
+                        },
+                        
+                        ListItemComponent {
+                            type: "sms"
+                            
+                            StandardListItem {
+                                title: ListItemData.value
+                                description: qsTr("SMS %1").arg(ListItemData.name)
+                                imageSource: "images/ic_sms.png"
+                            }
+                        },
+                        
+                        ListItemComponent {
+                            type: "email"
+                            
+                            StandardListItem {
+                                title: ListItemData.value
+                                description: ListItemData.name
+                                imageSource: "images/ic_email.png"
+                            }
+                        }
+                    ]
+                    
+                    dataModel: ArrayDataModel {
+                        id: theDataModel
+                    }
+                    
+                    layoutProperties: StackLayoutProperties {
+                        spaceQuota: 1
+                    }
+                    
+                    onTriggered:
+                    {
+                        var data = theDataModel.data(indexPath);
+                        
+                        if (data.type == "phone") {
+                            app.registerPhone(sequence, data.value);                    
+                        } else if (data.type == "email") {
+                            app.registerEmail(sequence, data.value);
+                        } else if (data.type == "sms") {
+                            app.registerSMS(sequence, data.value);
+                        }
+                        
+                        properties.navPane.pop();
                     }
                 }
-            ]
-            
-            dataModel: ArrayDataModel {
-                id: theDataModel
-            }
-            
-            layoutProperties: StackLayoutProperties {
-                spaceQuota: 1
-            }
-            
-            onTriggered: {
-                app.registerPhone( sequence, dataModel.data(indexPath).number )
             }
         }
     }
@@ -93,33 +122,31 @@ BaseRegisterPage
     attachedObjects: [
         PimContactPickerSheet {
             id: pcps
+            filterMobile: true
             
             onContactSelected: {
-                separator.visible = true
+                containerDelegate.delegateActive = true;
+                containerDelegate.control.contactName.text = result.displayName;
                 
-                contactName.text = name
-
-                if (avatarPath) {
-                    if (avatarPath.indexOf("file://") == -1) {
-                        avatar.imageSource = "file://" + avatarPath
+                var imageSource = "images/ic_user.png";
+                var smallPhotoPath = result.smallPhotoPath;
+                
+                if (smallPhotoPath) {
+                    if (smallPhotoPath.indexOf("file://") == -1) { // 10.1+
+                        imageSource = "file://"+smallPhotoPath;
                     } else {
-                        avatar.imageSource = avatarPath
+                        imageSource = smallPhotoPath;
                     }
-                } else {
-                    avatar.imageSource = "file:///usr/share/icons/tmb_contact.png"
                 }
                 
-                theDataModel.clear()
-                theDataModel.append( pcps.getPhoneNumbers() )
-                rotate.play()
+                containerDelegate.control.avatar.imageSource = imageSource;
                 
-                if ( theDataModel.size() == 1 ) {
-                    listView.triggered([0], true)
-                }
+                containerDelegate.control.model.clear();
+                containerDelegate.control.model.append(result.mediums);
             }
             
             onCanceled: {
-            	properties.navPane.pop()                
+                properties.navPane.pop();
             }
         }
     ]

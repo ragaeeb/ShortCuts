@@ -1,7 +1,7 @@
 import bb.cascades 1.0
 import bb.system 1.0
 
-BasePage
+Page
 {
     paneProperties: NavigationPaneProperties {
         property variant navPane: navigationPane
@@ -47,7 +47,7 @@ BasePage
         app.numShortcutsChanged.connect(onNumShortcutsChanged);
     }
     
-    contentContainer: Container
+    Container
     {
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Fill

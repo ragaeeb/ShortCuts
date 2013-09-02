@@ -1,10 +1,12 @@
 import bb.cascades 1.0
 
-BasePage
+Page
 {
-    contentContainer: Container
+    Container
     {
         leftPadding: 20; topPadding: 20; rightPadding: 20; bottomPadding: 20
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
         
         SliderPair
         {

@@ -1,8 +1,9 @@
 import bb.cascades 1.0
 
-BaseRegisterPage
+Page
 {
     id: root
+    property string sequence
     
     actions: [
         ActionItem {
@@ -27,9 +28,11 @@ BaseRegisterPage
         }
     ]
     
-    contentContainer: Container
+    Container
     {
         topPadding: 20; leftPadding: 20; rightPadding: 20;
+        horizontalAlignment: HorizontalAlignment.Fill
+        verticalAlignment: VerticalAlignment.Fill
         
         Label {
             text: qsTr("Enter the address:")

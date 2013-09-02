@@ -9,6 +9,7 @@ using namespace shortcuts;
 namespace {
 
 void redirectedMessageOutput(QtMsgType type, const char *msg) {
+	Q_UNUSED(type);
 	fprintf(stderr, "%s\n", msg);
 }
 

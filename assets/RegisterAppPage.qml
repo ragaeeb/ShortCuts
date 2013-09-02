@@ -1,8 +1,10 @@
 import bb.cascades 1.0
 
-BaseRegisterPage
+Page
 {
-    contentContainer: Container
+    property string sequence
+    
+    Container
     {
         topPadding: 20
         

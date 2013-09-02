@@ -9,12 +9,6 @@ Page
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Fill
         
-        TitleContainer {
-            backgroundImage: "images/dialog_title_bg_silver.amd"
-            logoImage: "images/unregistered_dialog_title_text.png"
-            preferredHeight: 100
-        }
-        
         Label {
             horizontalAlignment: HorizontalAlignment.Fill
             textStyle.textAlign: TextAlign.Center

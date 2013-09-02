@@ -28,10 +28,8 @@ NavigationPane
         page.destroy();
     }
     
-    BasePage
+    Page
     {
-        titleContainer.enabled: false
-
         keyListeners: [
             KeyListener {
                 onKeyReleased: {
@@ -45,6 +43,7 @@ NavigationPane
                 title: qsTr("Edit") + Retranslate.onLanguageChanged
                 imageSource: "images/ic_edit.png"
                 enabled: app.numShortcuts > 0
+                ActionBar.placement: ActionBarPlacement.OnBar
                 
                 onTriggered:
                 {
@@ -55,7 +54,7 @@ NavigationPane
             }
         ]
         
-        contentContainer: Container
+        Container
         {
             horizontalAlignment: HorizontalAlignment.Fill
             verticalAlignment: VerticalAlignment.Fill

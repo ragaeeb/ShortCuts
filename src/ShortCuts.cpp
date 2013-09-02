@@ -39,10 +39,10 @@ void ShortCuts::init()
 
 	m_cover.setContext("app", this);
 
-    qmlRegisterType<PimContactPickerSheet>("bb.cascades.pickers", 1, 0, "PimContactPickerSheet");
-	qmlRegisterType<bb::cascades::pickers::FilePicker>("CustomComponent", 1, 0, "FilePicker");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("CustomComponent", 1, 0, "FileType", "Can't instantiate");
-	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("CustomComponent", 1, 0, "FilePickerMode", "Can't instantiate");
+    qmlRegisterType<PimContactPickerSheet>("com.canadainc.data", 1, 0, "PimContactPickerSheet");
+	qmlRegisterType<bb::cascades::pickers::FilePicker>("bb.cascades.pickers", 1, 0, "FilePicker");
+	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("bb.cascades.pickers", 1, 0, "FileType", "Can't instantiate");
+	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("bb.cascades.pickers", 1, 0, "FilePickerMode", "Can't instantiate");
 
     QVariant saved = m_persistance.getValueFor("map");
 

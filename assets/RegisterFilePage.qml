@@ -1,9 +1,11 @@
 import bb.cascades 1.0
-import CustomComponent 1.0
+import bb.cascades.pickers 1.0
 
-BaseRegisterPage
+Page
 {
-    contentContainer: Container
+    property string sequence
+    
+    Container
     {
         topPadding: 20
         
@@ -30,7 +32,7 @@ BaseRegisterPage
         ]
         
         Button {
-            text: qsTr("Select File")
+            text: qsTr("Select File") + Retranslate.onLanguageChanged
             horizontalAlignment: HorizontalAlignment.Center
             verticalAlignment: VerticalAlignment.Center
             
