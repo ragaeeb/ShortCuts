@@ -6,6 +6,7 @@ Page
     
     Container
     {
+        topPadding: 10
         horizontalAlignment: HorizontalAlignment.Fill
         verticalAlignment: VerticalAlignment.Fill
         
@@ -15,6 +16,18 @@ Page
             textStyle.fontSize: FontSize.XXSmall
             multiline: true
             text: sequence
+        }
+        
+        Label {
+            topMargin: 10
+            multiline: true
+            horizontalAlignment: HorizontalAlignment.Fill
+            textStyle.textAlign: TextAlign.Center
+            text: qsTr("What should this gesture do?") + Retranslate.onLanguageChanged
+        }
+        
+        Divider {
+            topMargin: 0; bottomMargin: 0
         }
 
         ListView {
@@ -29,19 +42,17 @@ Page
                 ListItemComponent {
                     StandardListItem {
                         title: ListItemData.name
+                        imageSource: ListItemData.imageSource
+                        description: ListItemData.description
                     }
                 }
             ]
             
             onCreationCompleted: {
-                theDataModel.append( { name: qsTr("Browse"), source: "RegisterSitePage.qml" } )
-                theDataModel.append( { name: qsTr("Call"), source: "RegisterCallPage.qml" } )
-                theDataModel.append( { name: qsTr("Launch"), source: "RegisterAppPage.qml" } )
-                theDataModel.append( { name: qsTr("Open"), source: "RegisterFilePage.qml" } )
-            }
-            
-            layoutProperties: StackLayoutProperties {
-                spaceQuota: 1
+                theDataModel.append( { name: qsTr("Browse"), source: "RegisterSitePage.qml", imageSource: "images/ic_open_link.png", description: qsTr("Website") } );
+                theDataModel.append( { name: qsTr("Contact"), source: "RegisterCallPage.qml", imageSource: "images/ic_user.png" , description: qsTr("Email, SMS, & Phone")} );
+                theDataModel.append( { name: qsTr("Launch Settings"), source: "RegisterSettingsPage.qml", imageSource: "images/ic_settings.png", description: qsTr("BB10 Settings") } );
+                theDataModel.append( { name: qsTr("Open"), source: "RegisterFilePage.qml", imageSource: "images/ic_open_file.png", description: qsTr("Open File") } );
             }
             
             onTriggered: {

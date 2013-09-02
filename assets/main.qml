@@ -62,27 +62,18 @@ NavigationPane
             topPadding: 20
             layout: DockLayout {}
             
-            Label
-	        {
-	            id: label
-	            text: qsTr("In this pane perform all the gestures you want to register and/or process.") + Retranslate.onLanguageChanged
-	            multiline: true
-	            textStyle.fontSize: FontSize.XXSmall
-	            horizontalAlignment: HorizontalAlignment.Center
-	            verticalAlignment: VerticalAlignment.Top
-	            textStyle.textAlign: TextAlign.Center
-	            enabled: false
-	        }
+            onCreationCompleted: {
+                if ( persist.getValueFor("tutorialCount") < 1 ) {
+                    persist.showToast( qsTr("In this pane, perform all the gestures you want to process!"), qsTr("OK") );
+                    persist.saveValueFor("tutorialCount", 1);
+                }
+            }
 	        
 	        GestureContainer
 	        {
 	            id: gestureContainer
 	            horizontalAlignment: HorizontalAlignment.Fill
 	            verticalAlignment: VerticalAlignment.Fill
-	            
-	            layoutProperties: StackLayoutProperties {
-	                spaceQuota: 1
-	            }
 	            
 	            onSequenceCompleted: {
                     var result = app.process(sequence)
@@ -126,10 +117,6 @@ NavigationPane
                                 fromOpacity: 1
                                 toOpacity: 0
                                 duration: 250
-                                
-                                onEnded: {
-                                    currentKey.scaleX = currentKey.scaleY = 1;
-                                }
                             }
                         }
                         
@@ -138,6 +125,10 @@ NavigationPane
                             toX: 1.75
                             fromY: 1
                             toY: 1.75
+                        }
+                        
+                        onEnded: {
+                            currentKey.scaleX = currentKey.scaleY = 1;
                         }
                     }
                 ]

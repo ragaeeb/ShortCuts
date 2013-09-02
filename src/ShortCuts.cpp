@@ -18,6 +18,8 @@ using namespace bb::system;
 
 ShortCuts::ShortCuts(bb::cascades::Application* app) : QObject(app), m_cover("Cover.qml"), m_changed(false)
 {
+	INIT_SETTING("tutorialCount", 0);
+
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
     qml->setContextProperty("app", this);
     qml->setContextProperty("persist", &m_persistance);
