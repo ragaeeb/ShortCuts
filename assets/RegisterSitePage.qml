@@ -1,4 +1,5 @@
 import bb.cascades 1.0
+import QtQuick 1.0
 
 Page
 {
@@ -9,20 +10,18 @@ Page
         ActionItem {
             id: saveAction
             title: qsTr("Save")
-            imageSource: "file:///usr/share/icons/bb_action_saveas.png"
+            imageSource: "images/ic_save.png"
             ActionBar.placement: ActionBarPlacement.OnBar
 
             onTriggered: {
-                if (saveAction.enabled)
-                {
-                    var patt1=/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
-                    var result = patt1.test(textField.text)
+                textField.validator.validate();
+                
+                if (textField.validator.valid) {
+                    sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','url','%2')".arg(sequence).arg(textField.text);
+                    sql.load(5);
                     
-                    if (result) {
-                    	app.registerUri(sequence, textField.text)
-                    } else {
-                        persist.showToast("Invalid URL")
-                    }
+                    properties.navPane.pop();
+                    properties.navPane.pop();
                 }
             }
         }
@@ -44,17 +43,40 @@ Page
             id: textField
             topPadding: 20
             horizontalAlignment: HorizontalAlignment.Fill
-            hintText: qsTr("http://abdurrahman.org")
+            hintText: qsTr("http://abdurrahman.org") + Retranslate.onLanguageChanged
             inputMode: TextFieldInputMode.Url
+            inputRoute.primaryKeyTarget: true
             text: qsTr("http://") + Retranslate.onLanguageChanged
+            
+            validator: Validator
+            {
+                errorMessage: qsTr("Invalid URL") + Retranslate.onLanguageChanged
+
+                onValidate: { 
+                    var regex=/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+                    valid = regex.test(textField.text);
+                }
+            }
             
             input {
                 submitKey: SubmitKey.Submit
                 
                 onSubmitted: {
-                	saveAction.triggered()
+                	saveAction.triggered();
                 }
             }
+            
+            attachedObjects: [
+                Timer {
+                    running: true
+                    interval: 150
+                    repeat: false
+                    
+                    onTriggered: {
+                        textField.requestFocus();
+                    }
+                }
+            ]
         }
     }
 }

@@ -4,16 +4,17 @@ import bb.multimedia 1.0
 NavigationPane
 {
     id: navigationPane
-    
+    property string lastSequence
+
     attachedObjects: [
         ComponentDefinition {
             id: definition
         },
-        
+
         MediaKeyWatcher
         {
             key: MediaKey.PlayPause
-            
+
             onShortPress: {
                 app.focus();
             }
@@ -26,6 +27,23 @@ NavigationPane
 
     onPopTransitionEnded: {
         page.destroy();
+    }
+    
+    
+    function onDataLoaded(id, data)
+    {
+        if (id == 85 && data.length == 0)
+        {
+            definition.source = "GestureReactionPage.qml";
+            var page = definition.createObject();
+            page.sequence = lastSequence;
+            navigationPane.push(page);
+        }
+    }
+    
+    
+    onCreationCompleted: {
+        sql.dataLoaded.connect(onDataLoaded);
     }
     
     Page
@@ -68,6 +86,11 @@ NavigationPane
                     persist.saveValueFor("tutorialCount", 1);
                 }
             }
+            
+            RecordedGesturesLabel {
+                id: instructions
+                verticalAlignment: VerticalAlignment.Top
+            }
 	        
 	        GestureContainer
 	        {
@@ -76,16 +99,9 @@ NavigationPane
 	            verticalAlignment: VerticalAlignment.Fill
 	            
 	            onSequenceCompleted: {
-                    var result = app.process(sequence)
-                    
-                    if (!result) {
-                        var sequenceString = app.render(sequence)
-                        
-                        definition.source = "GestureReactionPage.qml"
-                        var page = definition.createObject()
-                        page.sequence = sequenceString
-                        navigationPane.push(page)
-                    }
+                    lastSequence = sequence.join(", ");
+	                sql.query = "SELECT * from gestures WHERE sequence='%1'".arg(lastSequence);
+                    sql.load(85);
 	            }
 	            
 	            onGestureAdded: {

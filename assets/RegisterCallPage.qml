@@ -49,6 +49,11 @@ Page
                 Label {
                     id: nameLabel
                     horizontalAlignment: HorizontalAlignment.Fill
+                    textStyle.textAlign: TextAlign.Center
+                }
+                
+                Divider {
+                    topMargin: 0; bottomMargin: 0
                 }
                 
                 ListView {
@@ -104,14 +109,10 @@ Page
                     {
                         var data = theDataModel.data(indexPath);
                         
-                        if (data.type == "phone") {
-                            app.registerPhone(sequence, data.value);                    
-                        } else if (data.type == "email") {
-                            app.registerEmail(sequence, data.value);
-                        } else if (data.type == "sms") {
-                            app.registerSMS(sequence, data.value);
-                        }
+                        sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','%2','%3')".arg(sequence).arg(data.type).arg(data.value);
+                        sql.load(5);
                         
+                        properties.navPane.pop();
                         properties.navPane.pop();
                     }
                 }

@@ -2,7 +2,7 @@ APP_NAME = ShortCuts
 
 INCLUDEPATH += ../../canadainc/src/
 CONFIG += qt warn_on cascades10
-LIBS += -lbbsystem -lbb -lbbcascadespickers -lbbpim
+LIBS += -lbbsystem -lbb -lbbcascadespickers -lbbpim -lbbdata
 
 CONFIG(release, debug|release) {
     DESTDIR = o.le-v7

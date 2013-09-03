@@ -5,13 +5,10 @@ Container
     horizontalAlignment: HorizontalAlignment.Fill
     verticalAlignment: VerticalAlignment.Fill
     layout: DockLayout {}
+    background: Color.Black
     
-    Label {
-        textStyle.base: SystemDefaults.TextStyles.SmallText
-        text: qsTr("%1 shortcuts registered...").arg(app.numShortcuts) + Retranslate.onLanguageChanged
-        multiline: true
-        textStyle.textAlign: TextAlign.Center
-        horizontalAlignment: HorizontalAlignment.Fill
+    RecordedGesturesLabel {
+        id: recorded
         verticalAlignment: VerticalAlignment.Center
     }
 }

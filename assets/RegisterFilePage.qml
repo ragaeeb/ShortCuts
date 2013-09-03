@@ -13,7 +13,7 @@ Page
         verticalAlignment: VerticalAlignment.Fill
         
         onCreationCompleted: {
-            filePicker.open()
+            filePicker.open();
         }
         
         attachedObjects: [
@@ -26,7 +26,11 @@ Page
                 }
                 
                 onFileSelected : {
-                    app.registerFile(sequence, selectedFiles[0])
+                    sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','file','%2')".arg(sequence).arg(selectedFiles[0]);
+                    sql.load(5);
+                    
+                    properties.navPane.pop();
+                    properties.navPane.pop();
                 }
 			}
         ]
