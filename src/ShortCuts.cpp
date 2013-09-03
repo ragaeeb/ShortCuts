@@ -14,7 +14,8 @@ using namespace bb::system;
 
 ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
 {
-	INIT_SETTING("tutorialCount", 0);
+	INIT_SETTING("gestureTutorialCount", 0);
+	INIT_SETTING("toggleTutorialCount", 0);
 
 	QString database = QString("%1/database.db").arg( QDir::homePath() );
 	m_sql.setSource(database);
@@ -41,7 +42,7 @@ ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
 
 void ShortCuts::init()
 {
-	INIT_SETTING("delay", 1000);
+	INIT_SETTING("processingDelay", 1);
 
 	m_cover.setContext("sql", &m_sql);
 
@@ -93,7 +94,7 @@ void ShortCuts::dataLoaded(int id, QVariant const& data)
 			}
 		}
 	} else if (id == 5) {
-		m_sql.setQuery("SELECT sequence,uri FROM gestures");
+		m_sql.setQuery("SELECT sequence,uri,type FROM gestures");
 		m_sql.load(2);
 	}
 }

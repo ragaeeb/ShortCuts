@@ -25,7 +25,7 @@ Label
     onCreationCompleted: {
         sql.dataLoaded.connect(onDataLoaded);
 
-        sql.query = "SELECT sequence,uri FROM gestures";
+        sql.query = "SELECT sequence,uri,type FROM gestures";
         sql.load(2);
     }
 }

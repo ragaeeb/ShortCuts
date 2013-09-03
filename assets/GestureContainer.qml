@@ -5,7 +5,6 @@ Container
 {
     id: gestureContainer
     
-    property alias delay: timer.interval
     property bool active: true
     property variant array: []
     property int downX;
@@ -78,7 +77,7 @@ Container
         Timer {
             id: timer
             repeat: false
-            interval: 1000
+            interval: persist.getValueFor("processingDelay")*1000
             
             onTriggered: {
                 sequenceCompleted(gestureContainer.array)
@@ -87,6 +86,17 @@ Container
             }
         }
     ]
+    
+    function onSettingChanged(key)
+    {
+        if (key == "processingDelay") {
+            timer.interval = persist.getValueFor("processingDelay")*1000;
+        }
+    }
+    
+    onCreationCompleted: {
+        persist.settingChanged.connect(onSettingChanged);
+    }
     
 	ImageView {
 	    id: fingerprint
