@@ -50,10 +50,13 @@ void ShortCuts::init()
 	qmlRegisterUncreatableType<bb::cascades::pickers::FileType>("bb.cascades.pickers", 1, 0, "FileType", "Can't instantiate");
 	qmlRegisterUncreatableType<bb::cascades::pickers::FilePickerMode>("bb.cascades.pickers", 1, 0, "FilePickerMode", "Can't instantiate");
 	qmlRegisterType<canadainc::InvocationUtils>("com.canadainc.data", 1, 0, "InvocationUtils");
+	qmlRegisterType<canadainc::PimUtil>("com.canadainc.data", 1, 0, "PimUtil");
 
 	connect( &m_sql, SIGNAL( dataLoaded(int, QVariant const&) ), this, SLOT( dataLoaded(int, QVariant const&) ) );
 
 	portDeprecatedMapping();
+
+	InvocationUtils::validateSharedFolderAccess( tr("Warning: It seems like the app does not have access to your Shared Folder. This permission is needed for the app to access the files so that it can make them available as shortcuts. If you leave this permission off, some features may not work properly.") );
 }
 
 
