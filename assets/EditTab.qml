@@ -12,7 +12,7 @@ NavigationPane
     
     onCreationCompleted: {
         if ( persist.getValueFor("toggleTutorialCount") < 1 ) {
-            persist.showToast( qsTr("Did you know that as long as you keep Short Cuts in the active tile frame or backgrounded, pressing the Play/Pause toggle button in between the Volume Up/Down button on the right-side of your BB10 device brings the app back to the foreground? Try it!\n\nThis way you can quickly get access to your shortcuts with even fewer steps as long as you keep the app open!"), qsTr("OK") );
+            persist.showToast( qsTr("Did you know that as long as you keep Sweep in the active tile frame or backgrounded, pressing the Play/Pause toggle button in between the Volume Up/Down button on the right-side of your BB10 device brings the app back to the foreground? Try it!\n\nThis way you can quickly get access to your shortcuts with even fewer steps as long as you keep the app open!"), qsTr("OK") );
             persist.saveValueFor("toggleTutorialCount", 1);
         }
     }
@@ -24,6 +24,29 @@ NavigationPane
         }
         
         actions: [
+            ActionItem {
+                title: qsTr("Homescreen+") + Retranslate.onLanguageChanged
+                imageSource: "images/ic_home.png"
+                ActionBar.placement: ActionBarPlacement.OnBar
+                
+                onTriggered: {
+                    home.trigger("bb.action.OPEN");
+                }
+                
+                attachedObjects: [
+                    Invocation {
+                        id: home
+                        
+                        query {
+                            mimeType: "text/html"
+                            uri: "http://appworld.blackberry.com/webstore/content/24832896"
+                            invokeActionId: "bb.action.OPEN"
+                            invokeTargetId: "sys.appworld"
+                        }
+                    }
+                ]
+            },
+            
             DeleteActionItem {
                 title: qsTr("Clear All") + Retranslate.onLanguageChanged
                 imageSource: "images/ic_delete_shortcut.png"
