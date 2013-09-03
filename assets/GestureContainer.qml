@@ -84,6 +84,15 @@ Container
                 var array = []
                 gestureContainer.array = array
             }
+        },
+        
+        ShakeDetector {
+            id: shaker
+            alwaysOn: false
+            
+            onDeviceShook: {
+                recordGesture("Shake");
+            }
         }
     ]
     
