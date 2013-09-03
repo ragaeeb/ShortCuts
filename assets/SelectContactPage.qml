@@ -109,9 +109,7 @@ Page
                     {
                         var data = theDataModel.data(indexPath);
                         
-                        sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','%2','%3')".arg(sequence).arg(data.type).arg(data.value);
-                        sql.load(5);
-                        
+                        app.registerShortcut(sequence, data.type, data.value);
                         properties.navPane.pop();
                         properties.navPane.pop();
                     }

@@ -1,8 +1,10 @@
 import bb.cascades 1.0
 import bb.multimedia 1.0
+import com.canadainc.data 1.0
 
 TabbedPane
 {
+    id: root
     activeTab: gestureTab
     showTabsOnActionBar: true
     
@@ -41,7 +43,9 @@ TabbedPane
         description: qsTr("Play") + Retranslate.onLanguageChanged
         imageSource: "images/ic_gesture.png"
         
-        GestureTab {}
+        GestureTab {
+            id: gestureContent
+        }
     }
     
     Tab {
@@ -58,7 +62,7 @@ TabbedPane
         
         function onDataLoaded(id, data)
         {
-            if (id == 2) {
+            if (id == QueryId.GetAll) {
                 unreadContentCount = data.length;
             }
         }

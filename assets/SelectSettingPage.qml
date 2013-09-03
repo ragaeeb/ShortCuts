@@ -79,11 +79,9 @@ Page
             }
             
             onTriggered: {
-                var value = theDataModel.data(indexPath)
+                var value = theDataModel.data(indexPath);
 
-                sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','setting','%2')".arg(sequence).arg(data.uri);
-                sql.load(5);
-                
+                app.registerShortcut(sequence, "setting", data.uri);
                 properties.navPane.pop();
                 properties.navPane.pop();
             }

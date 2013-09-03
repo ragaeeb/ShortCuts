@@ -1,4 +1,5 @@
 import bb.cascades 1.0
+import com.canadainc.data 1.0
 
 NavigationPane
 {
@@ -18,7 +19,7 @@ NavigationPane
     
     function onDataLoaded(id, data)
     {
-        if (id == 85 && data.length == 0)
+        if (id == QueryId.LookupSequence && data.length == 0)
         {
             definition.source = "GestureReactionPage.qml";
             var page = definition.createObject();
@@ -33,6 +34,8 @@ NavigationPane
     
     Page
     {
+        id: gestureRoot
+        
         keyListeners: [
             KeyListener {
                 onKeyReleased: {
@@ -68,9 +71,12 @@ NavigationPane
                 verticalAlignment: VerticalAlignment.Fill
                 
                 onSequenceCompleted: {
-                    lastSequence = sequence.join(", ");
-                    sql.query = "SELECT * from gestures WHERE sequence='%1'".arg(lastSequence);
-                    sql.load(85);
+                    if ( navigationPane.parent.parent.activePane == navigationPane && navigationPane.count() == 1 )
+                    {
+                        lastSequence = sequence.join(", ");
+                        sql.query = "SELECT * from gestures WHERE sequence='%1'".arg(lastSequence);
+                        sql.load(QueryId.LookupSequence);
+                    }
                 }
                 
                 onGestureAdded: {
@@ -107,9 +113,9 @@ NavigationPane
                         
                         ScaleTransition {
                             fromX: 1
-                            toX: 1.75
+                            toX: 2
                             fromY: 1
-                            toY: 1.75
+                            toY: 2
                         }
                         
                         onEnded: {

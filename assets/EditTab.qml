@@ -23,28 +23,20 @@ NavigationPane
             title: qsTr("Edit") + Retranslate.onLanguageChanged
         }
         
+        actionBarAutoHideBehavior: ActionBarAutoHideBehavior.HideOnScroll
+        
         actions: [
-            ActionItem {
-                title: qsTr("Homescreen+") + Retranslate.onLanguageChanged
+            InvokeActionItem {
+                id: home
+                title: qsTr("Home Screen+") + Retranslate.onLanguageChanged
                 imageSource: "images/ic_home.png"
                 ActionBar.placement: ActionBarPlacement.OnBar
                 
-                onTriggered: {
-                    home.trigger("bb.action.OPEN");
+                query {
+                    mimeType: "text/html"
+                    uri: "http://appworld.blackberry.com/webstore/content/24832896"
+                    invokeActionId: "bb.action.OPEN"
                 }
-                
-                attachedObjects: [
-                    Invocation {
-                        id: home
-                        
-                        query {
-                            mimeType: "text/html"
-                            uri: "http://appworld.blackberry.com/webstore/content/24832896"
-                            invokeActionId: "bb.action.OPEN"
-                            invokeTargetId: "sys.appworld"
-                        }
-                    }
-                ]
             },
             
             DeleteActionItem {
@@ -65,10 +57,7 @@ NavigationPane
                         
                         onFinished: {
                             if (result == SystemUiResult.ConfirmButtonSelection) {
-                                sql.query = "DELETE from gestures";
-                                sql.load(5);
-                                listView.reload();
-                                
+                                app.clearAllShortcuts();
                                 persist.showToast( qsTr("Cleared all shortcuts!") );
                             }
                         }
@@ -105,12 +94,8 @@ NavigationPane
                     id: adm
                 }
                 
-                function removeRecent(ListItemData)
-                {
-                    sql.query = "DELETE FROM gestures WHERE sequence=?";
-                    var params = [ListItemData.sequence];
-                    sql.executePrepared(params, 5);
-                    reload();
+                function removeRecent(ListItemData) {
+                    app.removeShortcut(ListItemData.sequence);
                 }
                 
                 function itemType(data, indexPath) {
@@ -219,7 +204,7 @@ NavigationPane
                 
                 function onDataLoaded(id, data)
                 {
-                    if (id == 2) {
+                    if (id == QueryId.GetAll) {
                         adm.clear();
                         adm.append(data);
                         
@@ -227,15 +212,9 @@ NavigationPane
                     }
                 }
                 
-                function reload()
-                {
-                    sql.query = "SELECT * from gestures";
-                    sql.load(2);
-                }
-                
                 onCreationCompleted: {
                     sql.dataLoaded.connect(onDataLoaded);
-                    reload();
+                    app.requestAllShortcuts();
                 }
             }
         }

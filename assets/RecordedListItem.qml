@@ -6,8 +6,8 @@ StandardListItem
     
     contextActions: [
         ActionSet {
-            title: sli.description
-            subtitle: sli.status
+            title: sli.title
+            subtitle: sli.description
             
             DeleteActionItem {
                 title: qsTr("Remove") + Retranslate.onLanguageChanged

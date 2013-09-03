@@ -22,9 +22,7 @@ Page
                 
                 if (contactPin.validator.valid)
                 {
-                    sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','%2','%3')".arg(sequence).arg(shortcutType.selectedValue).arg(contactPin.text);
-                    sql.load(5);
-                    
+                    app.registerShortcut(sequence, shortcutType.selectedValue, contactPin.text);
                     properties.navPane.pop();
                     properties.navPane.pop();
                 }

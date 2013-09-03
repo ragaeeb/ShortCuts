@@ -24,7 +24,22 @@ Page
             }
         }
         
+        SettingPair {
+            topMargin: 20
+            title: qsTr("Medium Font Size") + Retranslate.onLanguageChanged
+            key: "mediumFont"
+            
+            toggle.onCheckedChanged: {
+                if (checked) {
+                    infoText.text = qsTr("Medium font size will be used for the gesture summary.");
+                } else {
+                    infoText.text = qsTr("Extra small font size wil be used for the gesture summary.");
+                }
+            }
+        }
+        
         Label {
+            topMargin: 40
             id: infoText
             multiline: true
             textStyle.fontSize: FontSize.XXSmall

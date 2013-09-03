@@ -91,5 +91,12 @@ Page
                 }
             ]
         }
+        
+        onCreationCompleted: {
+            if ( persist.getValueFor("reportTutorialCount") < 1 ) {
+                persist.showToast( qsTr("Want to see a specific app integrated into Sweep that's not already here? You can send your request to the development team by:\n\n1) Swipe-down from the top-bezel.\n2) Choose Bug-Report.\n3) Fill out a feature request and specify the app you want us to look at and specifically what features you want to have integrated."), qsTr("OK") );
+                persist.saveValueFor("reportTutorialCount", 1);
+            }
+        }
     }
 }

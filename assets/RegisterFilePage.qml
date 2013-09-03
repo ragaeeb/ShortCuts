@@ -26,9 +26,7 @@ Page
                 }
                 
                 onFileSelected : {
-                    sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','file','%2')".arg(sequence).arg(selectedFiles[0]);
-                    sql.load(5);
-                    
+                    app.registerShortcut(sequence, "file", selectedFiles[0]);
                     properties.navPane.pop();
                     properties.navPane.pop();
                 }

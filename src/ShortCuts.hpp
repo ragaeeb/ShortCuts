@@ -29,8 +29,9 @@ class ShortCuts : public QObject
 
     ShortCuts(Application* app);
     void showRecordedGesture(QString const& sequence, QString const& message);
-    void portDeprecatedMapping();
     void openUrl(QString const& uri);
+    void openFile(QString const& uri);
+    void executeWrite(QString const& query, QVariantList const& args=QVariantList());
 
 private slots:
 	void init();
@@ -44,8 +45,12 @@ public:
 	static void create(Application* app);
     virtual ~ShortCuts();
 
-    Q_INVOKABLE void openFile(QString const& uri);
     Q_INVOKABLE void focus();
+
+    Q_INVOKABLE void removeShortcut(QString const& sequence);
+    Q_INVOKABLE void registerShortcut(QString const& sequence, QString const& type, QString const& uri);
+    Q_INVOKABLE void clearAllShortcuts();
+    Q_INVOKABLE void requestAllShortcuts();
 };
 
 }

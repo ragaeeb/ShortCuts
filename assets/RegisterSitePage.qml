@@ -17,9 +17,7 @@ Page
                 textField.validator.validate();
                 
                 if (textField.validator.valid) {
-                    sql.query = "INSERT INTO gestures (sequence, type, uri) VALUES('%1','url','%2')".arg(sequence).arg(textField.text);
-                    sql.load(5);
-                    
+                    app.registerShortcut(sequence, "url", textField.text);
                     properties.navPane.pop();
                     properties.navPane.pop();
                 }
