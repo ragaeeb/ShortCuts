@@ -6,6 +6,10 @@ Page
     id: root
     property string sequence
     
+    titleBar: TitleBar {
+        title: qsTr("Open Website") + Retranslate.onLanguageChanged
+    }
+    
     actions: [
         ActionItem {
             id: saveAction

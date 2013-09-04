@@ -39,8 +39,11 @@ NavigationPane
         keyListeners: [
             KeyListener {
                 onKeyReleased: {
-                    var value = String.fromCharCode(event.key);
-                    gestureContainer.recordGesture( "%1".arg(value) );
+                    if (event.key != 13)
+                    {
+                        var value = String.fromCharCode(event.key);
+                        gestureContainer.recordGesture( "%1".arg(value) );
+                    }
                 }
             }
         ]

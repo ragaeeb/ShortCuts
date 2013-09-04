@@ -171,8 +171,11 @@ void ShortCuts::requestAllShortcuts()
 }
 
 
-void ShortCuts::registerShortcut(QString const& sequence, QString const& type, QString const& uri) {
+void ShortCuts::registerShortcut(QString const& sequence, QString const& type, QString const& uri)
+{
     executeWrite( QString("INSERT INTO gestures (sequence, type, uri) VALUES('%1','%2',?)").arg(sequence).arg(type), QVariantList() << uri );
+
+    m_persistance.showToast( tr("Successfully registered gesture: %1").arg(sequence) );
 }
 
 

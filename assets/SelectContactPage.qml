@@ -11,6 +11,10 @@ Page
         id: properties
     }
     
+    titleBar: TitleBar {
+        title: qsTr("Contact") + Retranslate.onLanguageChanged
+    }
+    
     onCreationCompleted: {
         pcps.open();
     }
@@ -121,7 +125,7 @@ Page
     attachedObjects: [
         PimContactPickerSheet {
             id: pcps
-            filterMobile: true
+            filterMobile: false
             
             onContactSelected: {
                 containerDelegate.delegateActive = true;

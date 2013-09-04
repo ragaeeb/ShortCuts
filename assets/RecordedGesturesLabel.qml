@@ -18,7 +18,7 @@ Label
                 
                 for (var i = data.length-1; i >= 0; i--)
                 {
-                    if (data.type == "file")
+                    if (data[i].type == "file")
                     {
                         var uri = data[i].uri;
                         var lastSlash = uri.lastIndexOf("/");

@@ -10,6 +10,10 @@ Page
         id: properties
     }
     
+    titleBar: TitleBar {
+        title: qsTr("BBM") + Retranslate.onLanguageChanged
+    }
+    
     actions: [
         ActionItem {
             id: saveAction

@@ -5,6 +5,10 @@ Page
 {
     property string sequence
     
+    titleBar: TitleBar {
+        title: qsTr("Open File") + Retranslate.onLanguageChanged
+    }
+    
     Container
     {
         topPadding: 20
