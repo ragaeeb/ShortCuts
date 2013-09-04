@@ -12,7 +12,7 @@ NavigationPane
     
     onCreationCompleted: {
         if ( persist.getValueFor("toggleTutorialCount") < 1 ) {
-            persist.showToast( qsTr("Did you know that as long as you keep Sweep in the active tile frame or backgrounded, pressing the Play/Pause toggle button in between the Volume Up/Down button on the right-side of your BB10 device brings the app back to the foreground? Try it!\n\nThis way you can quickly get access to your shortcuts with even fewer steps as long as you keep the app open!"), qsTr("OK") );
+            persist.showToast( qsTr("Did you know that as long as you keep Sweep in the active tile frame or backgrounded, pressing the Play/Pause toggle button in between the Volume Up/Down button on the right-side of your BlackBerry 10 device brings the app back to the foreground? Try it!\n\nThis way you can quickly get access to your shortcuts with even fewer steps as long as you keep the app open!"), qsTr("OK") );
             persist.saveValueFor("toggleTutorialCount", 1);
         }
     }

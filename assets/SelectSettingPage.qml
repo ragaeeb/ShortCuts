@@ -24,7 +24,7 @@ Page
             horizontalAlignment: HorizontalAlignment.Fill
             textStyle.textAlign: TextAlign.Center
             textStyle.base: SystemDefaults.TextStyles.TitleText
-            text: qsTr("BB10 Settings")
+            text: qsTr("BlackBerry 10 Settings")
         }
 
         Divider {
