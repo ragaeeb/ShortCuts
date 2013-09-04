@@ -16,6 +16,7 @@ Page
             title: qsTr("Save")
             imageSource: "images/ic_save.png"
             ActionBar.placement: ActionBarPlacement.OnBar
+            enabled: textField.validator.valid
 
             onTriggered: {
                 textField.validator.validate();

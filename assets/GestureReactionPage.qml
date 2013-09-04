@@ -57,7 +57,8 @@ Page
             onCreationCompleted: {
                 theDataModel.append( { name: qsTr("Browse"), source: "RegisterSitePage.qml", imageSource: "images/ic_open_link.png", description: qsTr("Website") } );
                 theDataModel.append( { name: qsTr("BBM"), source: "SelectBBMContactPage.qml", imageSource: "file:///usr/share/icons/ic_start_bbm_chat.png", description: qsTr("BBM, BBM Voice, BBM Video") } );
-                theDataModel.append( { name: qsTr("Contact"), source: "SelectContactPage.qml", imageSource: "images/ic_user.png" , description: qsTr("Email, SMS, & Phone")} );
+                theDataModel.append( { name: qsTr("Contact"), source: "SelectContactPage.qml", imageSource: "images/ic_contact.png" , description: qsTr("Email, SMS, & Phone")} );
+                theDataModel.append( { name: qsTr("Non-Contact"), source: "SelectNonContactPage.qml", imageSource: "images/ic_non_contact.png" , description: qsTr("Email, SMS, & Phone")} );
                 theDataModel.append( { name: qsTr("Launch Settings"), source: "SelectSettingPage.qml", imageSource: "images/ic_settings.png", description: qsTr("BlackBerry 10 Settings") } );
                 theDataModel.append( { name: qsTr("Open"), source: "RegisterFilePage.qml", imageSource: "images/ic_open_file.png", description: qsTr("Open File") } );
             }
