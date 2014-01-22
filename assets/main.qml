@@ -15,7 +15,9 @@ TabbedPane
             key: MediaKey.PlayPause
             
             onShortPress: {
-                app.focus();
+                if ( persist.getValueFor("allowFocus") == 1 ) {
+                    app.focus();
+                }
             }
         },
         

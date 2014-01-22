@@ -113,6 +113,20 @@ Page
             
             SettingPair {
                 topMargin: 20
+                title: qsTr("Allow Play/Pause Key Focus") + Retranslate.onLanguageChanged
+                key: "allowFocus"
+                
+                toggle.onCheckedChanged: {
+                    if (checked) {
+                        infoText.text = qsTr("The play/pause key (voice command key) will automatically focus the app if the app is at least in active frame mode.");
+                    } else {
+                        infoText.text = qsTr("The play/pause key will not bring the app into focus.");
+                    }
+                }
+            }
+            
+            SettingPair {
+                topMargin: 20
                 title: qsTr("Show Virtual Keyboard") + Retranslate.onLanguageChanged
                 key: "showVKB"
                 visible: !hw.isPhysicalKeyboardDevice

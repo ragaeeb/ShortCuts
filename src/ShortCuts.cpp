@@ -22,6 +22,7 @@ ShortCuts::ShortCuts(Application* app) :
 	INIT_SETTING("reportTutorialCount", 0);
 	INIT_SETTING("mediumFont", 1);
 	INIT_SETTING("showVKB", 1);
+	INIT_SETTING("allowFocus", 1);
 
 	QString database = QString("%1/database.db").arg( QDir::homePath() );
 	m_sql->setSource(database);
