@@ -1,4 +1,5 @@
-import bb.cascades 1.0
+import bb.cascades 1.2
+import bb.device 1.0
 import bb.multimedia 1.0
 import com.canadainc.data 1.0
 
@@ -9,10 +10,6 @@ TabbedPane
     showTabsOnActionBar: true
     
     attachedObjects: [
-        ComponentDefinition {
-            id: definition
-        },
-        
         MediaKeyWatcher
         {
             key: MediaKey.PlayPause
@@ -20,20 +17,18 @@ TabbedPane
             onShortPress: {
                 app.focus();
             }
+        },
+        
+        HardwareInfo {
+            id: hw
         }
     ]
     
-    Menu.definition: CanadaIncMenu {
+    Menu.definition: CanadaIncMenu
+    {
+        allowDonations: true
         projectName: "short-cuts"
-    }
-    
-    function lazyLoad(actualSource, tab) {
-        definition.source = actualSource;
-        
-        var actual = definition.createObject();
-        tab.content = actual;
-        
-        return actual;
+        bbWorldID: "24609872"
     }
     
     Tab
@@ -42,9 +37,10 @@ TabbedPane
         title: qsTr("Main") + Retranslate.onLanguageChanged
         description: qsTr("Play") + Retranslate.onLanguageChanged
         imageSource: "images/ic_gesture.png"
+        delegateActivationPolicy: TabDelegateActivationPolicy.ActivateImmediately
         
-        GestureTab {
-            id: gestureContent
+        delegate: Delegate {
+            source: "GestureTab.qml"
         }
     }
     
@@ -53,11 +49,10 @@ TabbedPane
         title: qsTr("Edit") + Retranslate.onLanguageChanged
         description: qsTr("Delete Saved Shortcuts") + Retranslate.onLanguageChanged
         imageSource: "images/ic_edit.png"
+        delegateActivationPolicy: TabDelegateActivationPolicy.ActivateWhenSelected
         
-        onTriggered: {
-            if (! content) {
-                lazyLoad("EditTab.qml", edit);
-            }
+        delegate: Delegate {
+            source: "EditTab.qml"
         }
         
         function onDataLoaded(id, data)
@@ -70,5 +65,16 @@ TabbedPane
         onCreationCompleted: {
             sql.dataLoaded.connect(onDataLoaded);
         }
+    }
+    
+    function onFullScreen()
+    {
+        if ( !hw.isPhysicalKeyboardDevice && persist.getValueFor("showVKB") == 1 && activeTab == gestureTab ) {
+            vkb.show();
+        }
+    }
+    
+    onCreationCompleted: {
+        Application.fullscreen.connect(onFullScreen);
     }
 }

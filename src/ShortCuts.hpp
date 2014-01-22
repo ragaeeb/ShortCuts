@@ -4,6 +4,7 @@
 #include "customsqldatasource.h"
 #include "LazySceneCover.h"
 #include "Persistance.h"
+#include "VkbManager.h"
 
 #include <bb/system/InvokeManager>
 
@@ -26,6 +27,7 @@ class ShortCuts : public QObject
     LazySceneCover m_cover;
     Persistance m_persistance;
     bb::system::InvokeManager m_invokeManager;
+    VkbManager m_vkb;
 
     ShortCuts(Application* app);
     void showRecordedGesture(QString const& sequence, QString const& message);

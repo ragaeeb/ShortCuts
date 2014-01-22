@@ -19,6 +19,7 @@ ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
 	INIT_SETTING("toggleTutorialCount", 0);
 	INIT_SETTING("reportTutorialCount", 0);
 	INIT_SETTING("mediumFont", 1);
+	INIT_SETTING("showVKB", 1);
 
 	QString database = QString("%1/database.db").arg( QDir::homePath() );
 	m_sql.setSource(database);
@@ -26,7 +27,7 @@ ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
 	if ( !QFile(database).exists() ) {
 		QStringList qsl;
 		qsl << "CREATE TABLE gestures (sequence TEXT PRIMARY KEY, type TEXT, uri TEXT, metadata TEXT)";
-		m_sql.initSetup(qsl, 99);
+		m_sql.initSetup(qsl, QueryId::Setup);
 	}
 
 	qmlRegisterUncreatableType<QueryId>("com.canadainc.data", 1, 0, "QueryId", "Can't instantiate");
@@ -35,6 +36,7 @@ ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
     qml->setContextProperty("app", this);
     qml->setContextProperty("persist", &m_persistance);
     qml->setContextProperty("sql", &m_sql);
+    qml->setContextProperty("vkb", &m_vkb);
 
     AbstractPane* root = qml->createRootObject<AbstractPane>();
     app->setScene(root);

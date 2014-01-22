@@ -9,3 +9,6 @@
 #include <bb/cascades/Application>
 #include <bb/cascades/Control>
 #include <bb/cascades/QmlDocument>
+
+#include <bps/bps.h>
+#include <bps/virtualkeyboard.h>

@@ -14,6 +14,7 @@ public:
     enum Type {
         GetAll,
         LookupSequence,
+        Setup,
         WriteShortcut
     };
 };

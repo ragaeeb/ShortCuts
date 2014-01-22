@@ -1,4 +1,5 @@
 import bb.cascades 1.0
+import bb.device 1.0
 
 Page
 {
@@ -36,6 +37,27 @@ Page
                     infoText.text = qsTr("Extra small font size wil be used for the gesture summary.");
                 }
             }
+        }
+        
+        SettingPair {
+            topMargin: 20
+            title: qsTr("Show Virtual Keyboard") + Retranslate.onLanguageChanged
+            key: "showVKB"
+            visible: !hw.isPhysicalKeyboardDevice
+            
+            toggle.onCheckedChanged: {
+                if (checked) {
+                    infoText.text = qsTr("The virtual keyboard will be displayed on app startup.");
+                } else {
+                    infoText.text = qsTr("The virtual keyboard will be hidden on app startup.");
+                }
+            }
+            
+            attachedObjects: [
+                HardwareInfo {
+                    id: hw
+                }
+            ]
         }
         
         Label {

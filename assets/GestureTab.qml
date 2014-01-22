@@ -76,6 +76,7 @@ NavigationPane
                 onSequenceCompleted: {
                     if ( navigationPane.parent.parent.activePane == navigationPane && navigationPane.count() == 1 )
                     {
+                        vkb.hide();
                         lastSequence = sequence.join(", ");
                         sql.query = "SELECT * from gestures WHERE sequence='%1'".arg(lastSequence);
                         sql.load(QueryId.LookupSequence);
