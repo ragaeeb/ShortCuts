@@ -1,7 +1,6 @@
 #ifndef ShortCuts_HPP_
 #define ShortCuts_HPP_
 
-#include "customsqldatasource.h"
 #include "LazySceneCover.h"
 #include "Persistance.h"
 #include "VkbManager.h"
@@ -14,6 +13,10 @@ namespace bb {
 	}
 }
 
+namespace canadainc {
+	class CustomSqlDataSource;
+}
+
 namespace shortcuts {
 
 using namespace bb::cascades;
@@ -23,7 +26,7 @@ class ShortCuts : public QObject
 {
     Q_OBJECT
 
-    CustomSqlDataSource m_sql;
+    CustomSqlDataSource* m_sql;
     LazySceneCover m_cover;
     Persistance m_persistance;
     bb::system::InvokeManager m_invokeManager;
@@ -53,6 +56,8 @@ public:
     Q_INVOKABLE void registerShortcut(QString const& sequence, QString const& type, QString const& uri);
     Q_INVOKABLE void clearAllShortcuts();
     Q_INVOKABLE void requestAllShortcuts();
+    Q_INVOKABLE bool exportGestures(QString const& destination);
+    Q_INVOKABLE bool importGestures(QString const& source);
 };
 
 }

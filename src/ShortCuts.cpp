@@ -1,6 +1,7 @@
 #include "precompiled.h"
 
 #include "ShortCuts.hpp"
+#include "customsqldatasource.h"
 #include "Logger.h"
 #include "InvocationUtils.h"
 #include "PimContactPickerSheet.h"
@@ -13,7 +14,8 @@ using namespace canadainc;
 using namespace bb::cascades;
 using namespace bb::system;
 
-ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
+ShortCuts::ShortCuts(Application* app) :
+		QObject(app), m_sql( new CustomSqlDataSource(this) ), m_cover("Cover.qml")
 {
 	INIT_SETTING("gestureTutorialCount", 0);
 	INIT_SETTING("toggleTutorialCount", 0);
@@ -22,12 +24,12 @@ ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
 	INIT_SETTING("showVKB", 1);
 
 	QString database = QString("%1/database.db").arg( QDir::homePath() );
-	m_sql.setSource(database);
+	m_sql->setSource(database);
 
 	if ( !QFile(database).exists() ) {
 		QStringList qsl;
 		qsl << "CREATE TABLE gestures (sequence TEXT PRIMARY KEY, type TEXT, uri TEXT, metadata TEXT)";
-		m_sql.initSetup(qsl, QueryId::Setup);
+		m_sql->initSetup(qsl, QueryId::Setup);
 	}
 
 	qmlRegisterUncreatableType<QueryId>("com.canadainc.data", 1, 0, "QueryId", "Can't instantiate");
@@ -35,7 +37,7 @@ ShortCuts::ShortCuts(Application* app) : QObject(app), m_cover("Cover.qml")
     QmlDocument *qml = QmlDocument::create("asset:///main.qml").parent(this);
     qml->setContextProperty("app", this);
     qml->setContextProperty("persist", &m_persistance);
-    qml->setContextProperty("sql", &m_sql);
+    qml->setContextProperty("sql", m_sql);
     qml->setContextProperty("vkb", &m_vkb);
 
     AbstractPane* root = qml->createRootObject<AbstractPane>();
@@ -51,7 +53,7 @@ void ShortCuts::init()
 {
 	INIT_SETTING("processingDelay", 1);
 
-	m_cover.setContext("sql", &m_sql);
+	m_cover.setContext("sql", m_sql);
 	m_cover.setContext("persist", &m_persistance);
 	m_cover.setContext("app", this);
 
@@ -62,7 +64,7 @@ void ShortCuts::init()
 	qmlRegisterType<canadainc::InvocationUtils>("com.canadainc.data", 1, 0, "InvocationUtils");
 	qmlRegisterType<canadainc::PimUtil>("com.canadainc.data", 1, 0, "PimUtil");
 
-	connect( &m_sql, SIGNAL( dataLoaded(int, QVariant const&) ), this, SLOT( dataLoaded(int, QVariant const&) ) );
+	connect( m_sql, SIGNAL( dataLoaded(int, QVariant const&) ), this, SLOT( dataLoaded(int, QVariant const&) ) );
 
 	InvocationUtils::validateSharedFolderAccess( tr("Warning: It seems like the app does not have access to your Shared Folder. This permission is needed for the app to access the files so that it can make them available as shortcuts. If you leave this permission off, some features may not work properly.") );
 }
@@ -168,8 +170,8 @@ void ShortCuts::focus() {
 
 void ShortCuts::requestAllShortcuts()
 {
-	m_sql.setQuery("SELECT * from gestures");
-    m_sql.load(QueryId::GetAll);
+	m_sql->setQuery("SELECT * from gestures");
+    m_sql->load(QueryId::GetAll);
 }
 
 
@@ -193,15 +195,31 @@ void ShortCuts::clearAllShortcuts() {
 
 void ShortCuts::executeWrite(QString const& query, QVariantList const& args)
 {
-	m_sql.setQuery(query);
+	m_sql->setQuery(query);
 
 	if ( !args.isEmpty() ) {
-        m_sql.executePrepared(args, QueryId::WriteShortcut);
+        m_sql->executePrepared(args, QueryId::WriteShortcut);
 	} else {
-	    m_sql.load(QueryId::WriteShortcut);
+	    m_sql->load(QueryId::WriteShortcut);
 	}
 
     requestAllShortcuts();
+}
+
+
+bool ShortCuts::exportGestures(QString const& destination)
+{
+	LOGGER("Export" << destination);
+	return QFile::copy( m_sql->source(), destination );
+}
+
+
+bool ShortCuts::importGestures(QString const& source)
+{
+	QString src = m_sql->source();
+	QFile::remove(src);
+
+	return QFile::copy(source, src);
 }
 
 
