@@ -13,6 +13,20 @@ Page
         }
     ]
     
+    actions: [
+        InvokeActionItem {
+            query {
+                mimeType: "text/html"
+                uri: "http://www.youtube.com/watch?v=mNn1p4TCHCU"
+                invokeActionId: "bb.action.OPEN"
+            }
+            
+            imageSource: "images/ic_video.png"
+            title: qsTr("Video Tutorial") + Retranslate.onLanguageChanged
+            ActionBar.placement: ActionBarPlacement.OnBar
+        }
+    ]
+    
     titleBar: TitleBar {
         title: qsTr("Help") + Retranslate.onLanguageChanged
     }
